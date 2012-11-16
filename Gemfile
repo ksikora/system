@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.6'
+gem 'rails', '3.2.9'
 gem 'therubyracer'
-gem 'bootstrap-sass', '2.0.0' # sass to jezyk podobny do LESS CSS, ktorego normalnie uzywa bootstrap
+gem 'bootstrap-sass', '2.1' # sass to jezyk podobny do LESS CSS, ktorego normalnie uzywa bootstrap
 gem 'bcrypt-ruby', '3.0.1'# dzieki temu bedziemy szyfrowali hasla w bazie danych
 gem 'rb-readline' # to trzeba dodac jak sie db:migrate o to rzuca
 
@@ -17,7 +17,7 @@ gem 'annotate', '~> 2.4.1.beta', group: :development # generuje pożyteczne info
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '3.2.4'
+  gem 'sass-rails',   '3.2.5'
   gem 'coffee-rails', '3.2.2'
   gem 'uglifier', '1.2.3'
 end

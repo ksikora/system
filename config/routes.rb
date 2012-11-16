@@ -1,4 +1,26 @@
 System::Application.routes.draw do
+
+  root :to => 'static_pages#home'
+
+
+
+	
+
+  #get "static_pages/help"
+	match '/help', :to => 'static_pages#help' # get to to samo co match podobno. , to dziala bardziej implicite. teraz bedziemy odwolywali sie do /help a nie do static_pages/help, dodatkowo to nam tworzy zmienna help_path: '/help' i help_url: 'hhtp:...' ktora mozemy wszedzie uzyc
+
+
+  #get "static_pages/about"
+	match 'about', :to => 'static_pages#about'
+	
+  #get "static_pages/contact"
+	match 'contact', :to => 'static_pages#contact'
+
+	match 'signup', to: 'users#new'
+	match 'signin', to: 'sessions#new'
+	match 'signout', to: 'sessions#destroy', via: :delete # mówimy że signout musi byc wywolany przez rządanie HTTP typu DELETE request
+
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

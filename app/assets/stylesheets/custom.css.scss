@@ -1,0 +1,276 @@
+/* ten plik railsy automatycznie wpluwają w aplications.css */
+/* cssy moga sie odwolywac zarowno do klas(np. element_menu), do id(np #menu_lewe(wiki) ? ), do HTML taga lub do kombinacji, lub do pseudoklasy ( :visited )  */
+
+/* składnia poleceń Cascading Style Sheets: 
+selektor1, selektor2 { 
+	właściwość1: wartość;
+	właściwość2: wartość;
+} 
+
+uzywanie konkretnych selektorów:
+
+znaczniki:
+body {}
+
+klasy:
+.center
+
+id'sy:
+#jakis_id_podany_w_znaczniku_div
+*/
+
+@import "bootstrap";
+
+
+html {
+	overflow-y: scroll;  /* zawsze będzie scroll się pojawiał */
+}
+
+body {								/* oddala cialo od gornego paska  */
+	padding-top: 60px;
+}
+
+section { overflow: auto; } /* co to robi? chyba ustala automatyczne decydowanie o pasku przewijania dla "section" */
+
+textarea { resize: vertical; } /* jak bedzie obszar testowy to bedzie dalo go rozciagnac w pionie */
+
+.center { text-align: center; } /* centruje tekst. .center to jakas klasa odpowiadajaca częsci strony? (analogicznie do navbar by bylo) */
+
+.center h1 { margin-bottom: 10px; } /* dodaje pod h1 10 pixeli */
+
+/* mozna to zrobic zagniezadzajac(skladnia sass) SASS jest nadbudówką CSS!  */
+/*
+.center { 
+	text-align: center; 
+	h1 { 
+		margin-bottom: 10px; 
+	}
+}
+*/
+
+
+
+
+
+/* typografia */
+
+h1, h2, h3, h4, h5, h6 {
+	line-height: 1;
+}
+
+h1 {
+	font-size: 3em;
+	letter-spacing: -2 px;
+	margin-bottom: 30px;
+	text-align: center;
+}
+
+h2 {
+	font-size: 1.7em;
+	letter-spacing: -1px;
+	margin-bottom: 30px;
+	text-align: center;
+	font-weight: normal;
+	color: #999;
+}
+
+p {
+	font-size: 1.1em;
+	line-height: 1.7em;
+}
+
+
+/* header zmienia "sample app" na fajny*/
+
+
+/*
+#logo {
+	float: left;
+	margin-right: 10px;
+	font-size: 1.7em;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: -1px;
+	padding-top: 9px;
+	font-weight: bold;
+	line-height: 1;
+}
+
+#logo:hover{
+	color:#fff;
+	text-decoration: none;
+}
+*/ /* logo to to fajnie simple app? */
+#logo {
+	float: left;
+	margin-right: 10px;
+	font-size: 1.7em;
+	color: #fff;
+	text-transform: uppercase;
+	letter-spacing: -1px;
+	padding-top: 9px;
+	font-weight: bold;
+	line-height: 1;
+	&:hover{  /* najechanie myszka */
+		color: white; /* white to wbudowany kolor, to to samo co #fff */
+		text-decoration: none;
+	}
+}/* korzystamy z sass ktory pozwala na zagniezdzenia. & to referencja do parenta czyli logo. hover oznacza akcje najechania myszka*/
+
+
+
+/* footer */
+/*
+footer {
+  margin-top: 45px;
+  padding-top: 5px;
+  border-top: 1px solid #eaeaea;
+  color: #999;
+}
+
+footer a {
+  color: #555;
+}  
+
+footer a:hover { 
+  color: #222;
+}
+
+footer small {
+  float: left;
+}
+
+footer ul {
+  float: right;
+  list-style: none;
+}
+
+footer ul li {
+  float: left;
+  margin-left: 10px;
+}
+*/
+
+/* footer w skladni sass, dodajemy dodatkowo zmienne ktore tez mogą byc tylko w sass(lightgrey). zmienne takie juz istnieją np $grayLight to to samo i nie trzeba tego deklarować. oprocz tego są jeszce wbudowane kolory np "white"*/
+
+$lightGray: #999;
+footer {
+  margin-top: 45px;
+  padding-top: 5px;
+  border-top: 1px solid #eaeaea;
+  color: $lightGray;
+  a {
+    color: #555;
+    &:hover { 
+      color: #222;
+    }
+  }  
+  small { 
+    float: left; 
+  }
+  ul {
+    float: right;
+    list-style: none;
+    li {
+      float: left;
+      margin-left: 10px;
+    }
+  }
+}
+
+/* aby ladnie wygladala informacja z debug(params) */
+
+
+@mixin box_sizing { /* mixing to narzedzie sass do tworzenia paczek aby wielokrotnie mozna bylo tego uzyc */
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.debug_dump {
+	clear: both;
+	float: left;
+	width: 100%;
+	margin-top: 45px;
+	@include box_sizing;
+}
+
+
+/* sidebar, bedziemy tu modyfikowac znacznik aside wyswietlajacy dane uzytkownika */
+
+aside { 
+  section {
+    padding: 10px 0;
+    border-top: 1px solid $grayLighter;
+    &:first-child {
+      border: 0;
+      padding-top: 0;
+    }
+    span {
+      display: block; /* nic to nie zmienia UPDATE: dzieki temu na allegro zdjecia sa wyswietlane jedno pod drugim od razu do siebie przyczepione bez przerwy, domyślnie dwa wstawione zdjecia zostaly by wyswietlone kolo siebie a nie jedno pod drugim */
+      margin-bottom: 3px;
+      line-height: 1;
+    }
+    h1 {
+      font-size: 1.6em;
+      text-align: left;
+      letter-spacing: -1px;
+      margin-bottom: 3px;
+    }
+  }
+}
+
+.gravatar {
+  float: left; /*każe gravatarowi opływać z lewej strony tekst, efekt bedzie taki że napis bedzie zrównany z gorą gravatara */
+  margin-right: 10px;
+}
+
+
+
+/* formularz signup */
+
+
+
+input, textarea, select, .uneditable_input {
+	border: 1px solid #bbb;
+	width: 100%; /* textarea bedzie szeroka na caly span(czesc rowu) */
+	padding: 10px;
+	height: auto;
+	margin-bottom: 15px;
+	@include box_sizing;
+	
+}
+
+#error_explanation {
+	color: #f00; /*czerwony*/
+	ul {
+		list-style: none;
+		margin: 0 0 18px 0;
+	}
+}
+
+/*klasa filed_with_errors oznacza znaczniki <div>, ktore zawierają błędy wprowadzania do nich danych
+zainmportujemy dwie klasy bootstrapowe ktore otoczą je czerwoną obwódką */
+
+.field_with_errors {
+	@extend .control-group;
+	@extend .error;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+

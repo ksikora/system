@@ -1,14 +1,27 @@
-<!DOCTYPE html>
+<!DOCTYPE html> <!-- widoki odpowiednich stronek są wstawiane funkcja yield do body -->
 <html>
 <head>
-  <title>System</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
+<!-- stara wersja  <title>Ruby on Rails Tutorial Sample App | <%= yield(:title) %></title> --> <!-- insert the title, = przy otwierajacym oznacza execute i insert -->
+
+	<title><%= full_title(yield(:title)) %></title>
+
+  <%= stylesheet_link_tag    "application", :media => "all" %><!-- wstawiaplik application.css i javascripty ktore jeszce nam obrabiaja 																	stronke -->
   <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
+  <%= csrf_meta_tags %> <!-- zapobiega atakowi CSRF -->
 </head>
 <body>
+	<%= render 'layouts/header' %> <!-- funkcja render wstawia tu partiala z pliku _header.html.erb -->
+		<div class="container">				<!-- div oznacza po prostu sekcje, chodzi o to zeby kilka rzeczy zgrupowac w calosc -->
 
-<%= yield %>
+			<% flash.each do |key, value| %>
+				<div class="alert alert-<%= key %>"><%= value %></div> <!-- do flasha coś wrzucamy jak chcemy przekazać jakąś poboczną informację, w tym przypadku chodzi nam o info ze zarejestrowanie sie powiodło sukcesem lub nie powiodło, potem bedziemy uzywali tego do jeszce innych feebacków. Flashe są ładnie konwertowane przez includowanego CSSa bootstrapa-->
+			<% end %>
 
-</body>
+
+			<%= yield %>  <!-- ta funkcja wstawia tutaj html widoku strony do ktorej sie odwolujemy bezposrednio -->
+			<%= render 'layouts/footer' %>
+
+			<%= debug(params) if Rails.env.development? %> <!-- w trybie deweloperskim wyswietli dodatkowe informacje -->
+		</div>
+	</body>
 </html>
