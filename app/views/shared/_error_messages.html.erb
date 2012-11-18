@@ -1,0 +1,15 @@
+<!--# wyszystkie błędy dotyczące obiektu są zapisywane w errors. wazne jest ze te bledy generują walidacje i one są dość preceyzyjne -->
+<% if @user.errors.any? %>
+	<div id="error_explanation"> <!-- # # jesli jakiejść dywizji podamy id to do tego id mozemy sie odwolac w plikach css dając selektor: #error_explanation { właściwośći.... } -->
+		<div class="alert alert-error">
+			The form contains <%= pluralize(@user.errors.count, "error") %>. <!-- # helper pluralize pochodzi z ActionView::Helpers::TextHelper, jest on zajebisty, jesli cont jest mnogi to zamienia słowo po prawej na mnogą formę. umie zamienić nawet woman na woment. 0 errors, 1 error, 2 errors...-->
+		</div> <!-- # metoda count po prostu zlicza elementy w liscie -->
+					<!-- # metoda any? jest odwrotna do empty? to po prostu not empty -->
+		<ul>
+		<% @user.errors.full_messages.each do |msg| %>
+			<li>* <%= msg %></li>
+		<% end %>
+		</ul>
+	</div>
+<% end %>
+

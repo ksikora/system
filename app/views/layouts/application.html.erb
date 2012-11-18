@@ -5,8 +5,12 @@
 
 	<title><%= full_title(yield(:title)) %></title>
 
-  <%= stylesheet_link_tag    "application", :media => "all" %><!-- wstawiaplik application.css i javascripty ktore jeszce nam obrabiaja 																	stronke -->
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+
+		<!-- wstawiaplik application.css -->
   <%= javascript_include_tag "application" %>
+		<!-- wstawia javascripty ktore jeszce nam obrabiaja stronke, application.js -->
+
   <%= csrf_meta_tags %> <!-- zapobiega atakowi CSRF -->
 </head>
 <body>
@@ -19,9 +23,11 @@
 
 
 			<%= yield %>  <!-- ta funkcja wstawia tutaj html widoku strony do ktorej sie odwolujemy bezposrednio -->
+
+
 			<%= render 'layouts/footer' %>
 
 			<%= debug(params) if Rails.env.development? %> <!-- w trybie deweloperskim wyswietli dodatkowe informacje -->
 		</div>
-	</body>
+</body>
 </html>

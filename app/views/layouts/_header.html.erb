@@ -1,15 +1,37 @@
 <!-- to jest partial czyli wstawka czesciowa. konwencja kaze nazywac partiale od _ -->
+
 	<header class="navbar navbar-fixed-top"> <!-- header to cos co ma byc na gorze strony(taki znacznik html poprostu), przekazujemy mu 2 klasy CSS oddzielone space sa one uzywane przez bootstrap framework ktory obrabia layout na styl tweeterowy  -->
 	
-		<!-- navbar odnosi sie do navigation bar, czyli paska, ktory dizeki fixed-top jest przyczepiony u gory ekranu, wyglada spoko-->
+		<!-- navbar odnosi sie do navigation bar, czyli paska, ktory dizeki fixed-top jest przyczepiony u gory ekranu, wyglada spoko -->
 		<!-- wszystko ponizej odnosi sie do headera ktory jest nawigation barem teraz -->
 		<div class="navbar-inner">		<!-- tu tez przekazujemy klasy CSS -->					
 			<div class="container">
-					<%= link_to "Analyst system", root_path, :id => "logo" %>  <!-- nadajemy temu elementowi id logo by w css sie odwolac? na pewno o to chodzi? -->
-					<nav> <!-- nav to tez pewnego rodzaju sekcja --> 							<ul class="nav pull-right">                   <!-- unordered list -->
+					<%= link_to "microblog", root_path, :id => "logo" %>  <!-- nadajemy temu elementowi id logo by w css sie odwolac? na pewno o to chodzi? -->
+					<nav> 																					<!-- nav to tez pewnego rodzaju sekcja -->
+						<ul class="nav pull-right">                   <!-- unordered list -->
 							<li><%= link_to "Home", root_path %></li>  <!-- link_to to helper ktory wykonuje <a herf="http...", przy czym # to stub zamiast adresu(UPDATE: zamienilismy stuba na zmienna ktora reprezentuje sciezke do strony) a Home sie nam wyswietli -->
 							<li><%= link_to "Help", help_path %></li>  <!-- li - list item -->
-							<li><%= link_to "Sign in", signin_path %></li>
+							<% if signed_in? %> <!-- funkcja z helpera, ktora sprawdza czy istnieje jakis current_user -->
+							    <li><%= link_to "Users", '#' %></li>
+							    <li id="fat-menu" class="dropdown">
+							      <a href="#" class="dropdown-toggle" data-toggle="dropdown" >
+								Account <b class="caret"></b>
+							      </a>
+							      <ul class="dropdown-menu">
+								<li><%= link_to "Profile", current_user %></li> <!-- w rzeczywistosci to jest skrot od tego: <%= link_to "Profile", user_path(current_user) %>, czyli rzadaj show user czyli users/id -->
+
+								<li><%= link_to "Settings", edit_user_path(current_user) %>
+</li>
+								<li class="divider"></li>
+								<li>
+								  <%= link_to "Sign out", signout_path, method: "delete" %>
+								</li>
+							      </ul>
+							    </li>
+							<% else %>
+							    <li><%= link_to "Sign in", signin_path %></li>
+							<% end %>
+
 						</ul>
 					</nav>
 			</div>

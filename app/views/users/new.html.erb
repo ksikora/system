@@ -1,0 +1,67 @@
+<% provide(:title, 'Sign up') %>
+<h1>Sign up</h1>
+
+<div class="row"> <!-- # co to jest row jest wytlumaczone w show -->
+	<div class="span6 offset3">
+		<%= form_for(@user) do |f| %> <!-- metoda rubiego pozwalajaca tworzyc formularz wzorujac sie na obiekcie(ciekawe czy od razu go do niego podpina? Wazne jest że ta zmienna @user jest wczesniej tworzona przez kontroler w momencie zadania wyrenderowania strony tworzenia nowego uzytkownika (users/new), UWAGA UWAGA: w przypadku błędnych danych, znowu jest renderowana strona new, przy czym pola będą już wypełnione danymi podanymi wczesniej, wygenerowany HTML będzie mial postać : <input... name=... value="FOO">  To automatyczne dzialanie rowniez zawdzieczamy form_for, ktora analizuje obiekt @user pod obecność już jakichś pól-->
+
+
+			<%= render 'shared/error_messages' %> <!-- # to nam wypluje co sie nie powiodlo w poprzednim logowaniu, konwencja kaze by bylo w shared, jesli widok moze byc wyrenderowany przez widoki z róznych grup -->
+
+			<%= f.label :name %>  <!-- # wypluwa HTMLa odpowiedniego dla obiektu(znacznik <label... >, label to etykieta, czyli po prostu nazwa pola-->
+			<%= f.text_field :name %><!-- # a to wlasnie to pole, tekstowe. -->
+
+			<%= f.label :email %>
+			<%= f.text_field :email %>
+
+			<%= f.label :password %>
+			<%= f.password_field :password%> <!-- # to wypluje htmla w postaci <input ... type="password"> zamiast "text" WYSWIETLA KROPKI -->
+
+			<%= f.label :password_confirmation, "Confirmation" %> <!--  # rozumiem ze skoro wczseniej nie podawalismy to on nazwy tych labeli generował na podstawie bazy danych czy co? dlaczego :name to Name ?, pewnie to jest przyjeta konwencja ze bieze nazwe pola z upcasem -->
+			<%= f.password_field :password_confirmation %>
+
+			<%= f.submit "Create my account", class: "btn btn-large btn-primary" %>
+		<% end %>
+	</div>
+</div>
+
+<!--
+wygenerowany html: jego analiza jest bardzo wazna by bylo wiadomo co sie dzieje:
+
+<form accept-charset="UTF-8" action="/users" class="new_user"
+      id="new_user" method="post">  # bardzo wazna jest action i method. method="post" generuje http POST request pod adres /users co wywola na userach restowe POST. To wywołane Post request trafia domyslnie w rescie do metody create w controlerze. Rails wygenerowal walsnie takiego htmla bo zmienna @users zawiera nowego uzytkownika i railsy o tym wiedza  
+
+# wniosek jest taki że jakas strona wysyla żądanie POST jeśli własnie pojawia się np w/w. (tu sie to dzieje zapewne po wcisnieciu guzika submit) 
+
+
+
+
+  <label for="user_name">Name</label>
+  <input id="user_name" name="user[name]" size="30" type="text" />
+
+			#zmienna name jest po to by tworzyc hasha do tworzenia uzytkownika, chyba po prostu to dostarcza przypisanie zmiennych
+			# sluzy to do zmbierania danych z formularza. mozna sie do kompletu zebrancyh danych odwolac poprzez params(:user) i to zrobimy zeby stworzyc nowy obiekt
+  <label for="user_email">Email</label>
+
+  <input id="user_email" name="user[email]" size="30" type="text" />
+		# " w tym polu tekstowym jest email, ktory zapiszesz jako pole obiektu user. wszystkie arugmenty usera da sie nastepnie wydobryc robiac params[:user]. to po prostu mapa(hash) czyli: to samo co (name: "Foo Bar", email: "... )
+		
+
+
+  <label for="user_password">Password</label>
+  <input id="user_password" name="user[password]" size="30"
+         type="password" />
+
+  <label for="user_password_confirmation">Confirmation</label>
+  <input id="user_password_confirmation" 
+         name="user[password_confirmation]" size="30" type="password" />
+
+  <input class="btn btn-large btn-primary" name="commit" type="submit" 
+         value="Create my account" />
+</form> 
+
+
+
+
+
+-->

@@ -1,8 +1,19 @@
-System::Application.routes.draw do
+SimpleApp::Application.routes.draw do
 
-  root :to => 'static_pages#home'
+	resources :users #mowi ze pod adresem /users są jakies zasoby RESTowe(do ktorych sie mozna odwolac po /id np users/1 oraz wiele innych(po prostu calego resta. np users/1/edit albo /users/new
+
+	resources :sessions, only: [:new, :create, :destroy] # tylko wymienione restowe operacje sa dozwolone new -> wyswietlanie strony signin(GET), create -> zatwierdzanie formularza na stronie signin -> (POST), natomiast destroy jest generowane poprzez nacisniecie signout 
+
+	match '/signup',  to: 'users#new' # wyswietl(GET) formularz rejestracji
+
+	match '/signin',  to: 'sessions#new' # wyswietl(GET) formularz logowania, czyli tworzenia nowej sesji
+	match '/signout', to: 'sessions#destroy', via: :delete # wyloguj sie, uzyj (DELETE restowego)
+	# nie zadeklarowalismy create dla session czyli jest domyslna /sessions
 
 
+
+  #get "static_pages/home"
+	root :to => 'static_pages#home' # to nam zrobi ze sciezka domyslna '/' bedzie sie odwolywac do pliku home	
 
 	
 
@@ -15,10 +26,6 @@ System::Application.routes.draw do
 	
   #get "static_pages/contact"
 	match 'contact', :to => 'static_pages#contact'
-
-	match 'signup', to: 'users#new'
-	match 'signin', to: 'sessions#new'
-	match 'signout', to: 'sessions#destroy', via: :delete # mówimy że signout musi byc wywolany przez rządanie HTTP typu DELETE request
 
 
   # The priority is based upon order of creation:

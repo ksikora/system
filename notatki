@@ -1,0 +1,62 @@
+odpalanie konsli w trybie zabawy:
+rails console --sandbox
+User.create = User.new + User.save
+odwrotnosc do create to u.destroy
+
+Uzywanie Active record do wydobywania operacji z bazy danych:
+User.find(1)
+User.find_by_email("kukumail")
+
+#modyfikowanie istniejacych
+user = User.first
+user.email = dupa;
+user.save # jak nie damy save to mozemy odczytac pierwotna wersje z bazy user.reload
+
+User.all
+
+user.update_attributes(name: "asdfs", ...) # to robi automatyczny save. mozna zmodyfikowac tylko atrybuty accessible
+
+User.count -> zliczy rekordy w bazie
+
+
+########## uzywanie cookies############
+
+wersja tradycyjna:
+obiekt session
+session[:remember_token] = user.id # zrzuca user.id do cookies pod postacia :rmember_token
+User.find(session[:remember_token]) # tak sie w kazdym miescu w kodzie dzieki temu mozemy do tego odolac, az do zamknieca przegladarki
+
+inna metoda to uzywanie permanent cookie, ktore przetrwaja naweet zamkniecie przegladarki(chcemy by uzytkownik byl zawse zalogowany az sie nie wyloguje, to sie realizuje tak ze uzytkownik ma dodatkowe pole w bazie danych. to pole sie nazywa remember_token:string
+
+cookies[:remember_token] = { value:   user.remember_token,
+                             expires: 20.years.from_now.utc } # da sie ustawic expiration date
+to jest tak czesto uzywane ze skrucono do:
+cookies.permanent[:remember_token] = user.remember_token # zapisuje do pliku tekstowego, dostepne teraz na kazdej stronie
+
+odwolujemy sie tak:
+User.find_by_remember_token(cookies[:remember_token]) # tak naprawde cookies[:remember_token] wydobywa ta informacje z pliku tekstowego cookie ktory siedzi w przegladarce a nie w pamieci. remember_token nie moze byc id, tylko musi byc wygenerowanym w modelu bardzo zadkim stringiem zeby sie nie pomylilo z innymi cookiesami przegladarki
+
+atak z tym zwiazany polega na przechwytywaniu remember_tokena podczas podsluchu i podszywanie sie pod tego uzytkownika, wrzucajac remember token do swojej przegladarki, dlatego sesja powinna byc szyfrowana
+
+
+
+############# obsluga gita i heroku ######################
+
+git add -u
+git checkout -b newbranch
+git checkout existingbranch
+git branch -> list all branch
+
+
+git remote -v
+git remote rm origin
+git remote add origin git@github.com:ksikora/simple_app.git
+
+heroku login
+heroku create
+
+heroku keys:
+heroku keys:add
+
+heroku open
+heroku rename newdomain

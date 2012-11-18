@@ -1,0 +1,41 @@
+<% provide(:title, "Sign in") %>
+<h1>Sign in</h1>
+
+<div class="row">
+  <div class="span6 offset3">
+    <%= form_for(:session, url: sessions_path) do |f| %> <!-- to nam explicite mowi, ze operujemy na zasobie session i zatwierdzenie ma nas przeniesc do sessions_path, co jak wiadomo jest domyslne dla akcji create w controlerze, czyli narzucamy przez to POST. Wczeniej jak mielismy zasob @User, to to sie samo przez sie narzucalo -->
+
+      <%= f.label :email %>
+      <%= f.text_field :email %>
+
+      <%= f.label :password %>
+      <%= f.password_field :password %>
+
+      <%= f.submit "Sign in", class: "btn btn-large btn-primary" %>
+    <% end %>
+
+    <p>New user? <%= link_to "Sign up now!", signup_path %></p>
+  </div>
+</div>
+
+
+<!-- wygenerowany html:
+<form accept-charset="UTF-8" action="/sessions" method="post">
+  <div>
+    <label for="session_email">Email</label>
+    <input id="session_email" name="session[email]" size="30" type="text" />
+  </div>
+  <div>
+    <label for="session_password">Password</label>
+    <input id="session_password" name="session[password]" size="30" 
+           type="password" />
+  </div>
+  <input class="btn btn-large btn-primary" name="commit" type="submit" 
+       value="Sign in" />
+</form>
+
+
+
+
+-->
+

@@ -1,26 +1,18 @@
 <% provide(:title, 'Home') %> <!-- przypisuje zmiennej title "Home"  znaczniki bez rowna sie tylko execute code -->
 <div class="center hero-unit"> <!-- # ta klasa(hero-unit) odpowiada za obszar o delikatnie niebieskim tle. importujemy 2 klasy -->
-		<h1>Welcome to system</h1>
-		<h2>this system perform gathering and visualisation of given distributed data source</h2>
-		<p>a	</p>
-		<p>	a</p>
-		<p>	a</p>
-		<p>	a</p>
-		<p>	a</p>
-		<p>a	</p>
-		<p>	a</p>
-		<p>	a</p>
-		<p>a	</p>
-		<p>	a</p>
-		<p>a	</p>
-		<p>	a</p>
-		<p>	a</p>
-		<p>	a</p>
-		<p>	a</p>
-		<p>a	</p>
-		<p>a	</p>
-		<p>	aa</p>
-		<p>	</p>
+		<h1>Sample App</h1>
+		<h2>this is the homepage</h2>
+
+		<%= link_to "Sign up now!", signup_path, :class => "btn btn-large btn-primary" %> <!-- klasy btn to buttony, kolejne klasy działają jak dektoratory, kazda klasa dorzuca coś od siebie, niektore klasy są dodawane po to by do nich podpiąc jakiegos cssa co jest mega wygodne 
+
+btn-success - zielony
+btn-primary - niebieski
+bez tego jest przeźroczysty
+-->
+
 </div>
+
+<%= link_to image_tag("rails.png", :alt => "Rails"), 'http://rubyonrails.org/' %> <!-- obrazek bieze z /assets/, alt to to co wyswietlimy jesli nie ma obrazka, w railsach mozna go pominac bo domyslnie jest nazwa obrazka, w htmlu nie mozna -->
+
 
 

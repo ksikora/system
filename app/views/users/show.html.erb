@@ -1,0 +1,15 @@
+<!--showes one user, ten widok trzeba podpiac w kontrolerze do akcji RESTOWEJ dla URL users/id-->
+<% provide(:title, @user.name)%>
+
+<div class= "row">		<!-- tworzymy rzad bootstrapowy gdzie spanX to poszczególna jego sekcja. X to rozmiar sekcji. row = span1 span1 span1 ....  -->
+	<aside class="span4"> <!-- span4 zrobi tak ze w rzedzie bedzie podzial na 3 kolumny, to co zawiera span4 bedzie dopasowywane na sile do tej kolumny. poniewaz nie podalismy offsetu to ten span odwoluje sie do tej najbardziej na lewej kolumny. -->
+		<section>
+			<h1>
+				<%= gravatar_for @user %>
+				<%= @user.name%>
+
+			</h1>
+		</section>
+	</aside>
+</div>
+<%= @user.name %>, <%= @user.email %>

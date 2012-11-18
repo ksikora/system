@@ -2,9 +2,9 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.9'
 gem 'therubyracer'
-gem 'bootstrap-sass', '2.1' # sass to jezyk podobny do LESS CSS, ktorego normalnie uzywa bootstrap
+gem 'bootstrap-sass', '2.0.2' # sass to jezyk podobny do LESS CSS, ktorego normalnie uzywa bootstrap
 gem 'bcrypt-ruby', '3.0.1'# dzieki temu bedziemy szyfrowali hasla w bazie danych
-gem 'rb-readline' # to trzeba dodac jak sie db:migrate o to rzuca
+gem 'rb-readline' # aby konsola dziala
 
 group :development, :test do
   gem 'sqlite3', '1.3.5'
