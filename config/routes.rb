@@ -1,5 +1,11 @@
 SimpleApp::Application.routes.draw do
 
+  resources :devices
+
+
+  	resources :devices
+
+
 	resources :users #mowi ze pod adresem /users są jakies zasoby RESTowe(do ktorych sie mozna odwolac po /id np users/1 oraz wiele innych(po prostu calego resta. np users/1/edit albo /users/new
 
 	resources :sessions, only: [:new, :create, :destroy] # tylko wymienione restowe operacje sa dozwolone new -> wyswietlanie strony signin(GET), create -> zatwierdzanie formularza na stronie signin -> (POST), natomiast destroy jest generowane poprzez nacisniecie signout 
@@ -18,7 +24,7 @@ SimpleApp::Application.routes.draw do
 	
 
   #get "static_pages/help"
-	match '/help', :to => 'static_pages#help' # get to to samo co match podobno. , to dziala bardziej implicite. teraz bedziemy odwolywali sie do /help a nie do static_pages/help, dodatkowo to nam tworzy zmienna help_path: '/help' i help_url: 'hhtp:...' ktora mozemy wszedzie uzyc
+	match 'help', :to => 'static_pages#help' # get to to samo co match podobno. , to dziala bardziej implicite. teraz bedziemy odwolywali sie do /help a nie do static_pages/help, dodatkowo to nam tworzy zmienna help_path: '/help' i help_url: 'hhtp:...' ktora mozemy wszedzie uzyc
 
 
   #get "static_pages/about"

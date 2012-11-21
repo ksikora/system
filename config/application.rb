@@ -64,5 +64,42 @@ module SimpleApp
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+################ konfiguracja servera 
+
+    require 'socket'
+
+    Sockets=Hash.new
+
+
+    #$threads = [] # tablica hashy postaci nazwawatku => referencja do watku
+    #threads = [ "watek" ] 
+
+    def runserv
+      #file = File.open '../log/tcpserver.log', 'a'
+      #file = File.new 'dupa.log', 'w'
+      server = TCPServer.new 21001 
+
+      #file.puts 'server initialized'
+      puts 'server initialized'
+      loop do
+	  Thread.start(server.accept) do |client|
+		name = client.gets
+		dtype = client.gets
+		Sockets[name]=client
+		hash = Hash[name: name, dtype: dtype, sends_logs: false]
+		puts hash
+		@device = Device.new(hash) 
+		@device.save
+		puts 'device saved to database'
+	end
+      end
+    end	
+
+    a = Thread.new {runserv}
+
+############## koniec konfiguracj servera tcp
+
+
   end
 end

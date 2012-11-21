@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121117193040) do
+ActiveRecord::Schema.define(:version => 20121121130641) do
+
+  create_table "devices", :force => true do |t|
+    t.string   "name"
+    t.string   "dtype"
+    t.boolean  "sends_logs"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "name"
