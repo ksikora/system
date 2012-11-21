@@ -19,8 +19,8 @@ class DevicesController < ApplicationController
       format.html # show.html.erb
       format.json { render json: @device }
     end
-    client = SimpleApp::Application::Sockets[@device.name]
-    client.puts 'dupa'
+    #client = SimpleApp::Application::Sockets[@device.name]
+    #client.puts 'dupa'
   end
 
   # GET /devices/new
@@ -59,9 +59,14 @@ class DevicesController < ApplicationController
   # PUT /devices/1.json
   def update
     @device = Device.find(params[:id])
-
+    devicename = @device.name
     respond_to do |format|
       if @device.update_attributes(params[:device])
+	if @device.sends_logs
+	  puts @device.name
+          client = SimpleApp::Application::Sockets[devicename] # wczesniejsza wersja z tutaj wyluskiwanym name nie dziala bo zwracalo nul
+          client.puts 'dupa'     	
+        end
         format.html { redirect_to @device, notice: 'Device was successfully updated.' }
         format.json { head :no_content }
       else
@@ -82,4 +87,6 @@ class DevicesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+
 end
