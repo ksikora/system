@@ -33,6 +33,9 @@ SimpleApp::Application.routes.draw do
 	match 'contact', :to => 'static_pages#contact'
 
 
+  match 'charts', :to => 'charts#chart'
+	match 'get_data_from_c' => 'charts#get_data_from_c'
+	# drugi jest potrzebny do pobierania danych do RT wykresu przez resta
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
