@@ -89,4 +89,20 @@ class DevicesController < ApplicationController
   end
 
 
+  def activate
+    @device = Device.find(params[:id])
+    devicename = @device.name
+    @device.update_attributes(:sends_logs, true)
+
+    client = SimpleApp::Application::Sockets[devicename]
+    client.puts 'dupa'  
+
+    format.html { redirect_to devices_path, notice: 'Device was successfully updated.' }
+  end
+
+
+
+
+
+
 end
