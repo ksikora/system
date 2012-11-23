@@ -1,6 +1,17 @@
 
 <script type="text/javascript">
 
+
+var d;
+function get_data(xx) {
+//tutaj URL bedzie trzeba przerobic - jako argument powinien dostawac ID urzadzenia do monitorowaniwania
+$.get('/get_data_from_c?x='+xx, function(data){
+d = parseFloat(data);
+});
+return d;
+}
+
+
 Highcharts.setOptions({
 global: {
 useUTC: false
@@ -15,26 +26,28 @@ $(document).ready(function() {
    chart = new Highcharts.Chart({
       chart: {
          renderTo: 'container',
-
          marginRight: 10,
          events: {
             load: function() {
    
-               // set up the updating of the chart every 10 seconds
+               // set up the updating of the chart every 0.2 seconds
                var series = this.series[0];
                setInterval(function() {
                   var x = (new Date()).getTime(), // current time
-                     //y = get_data();
-
-                     y = Math.sin(xx);
+                     
+										 
+ 										 y = get_data(xx);
+										 if(typeof(y) == undefined)
+										 {
+										 	 y = 0;
+										 }
+                     //y = Math.sin(xx);
                      
                   	 xx = xx+ 0.1;
-										 if(plotting)
-										 {
-												series.addPoint([x, y], true, true);
-										 }
+                  	 series.addPoint([x, y], true, true);
 
-               }, 200);
+
+               }, 300);
             }
          }
       },
@@ -66,12 +79,19 @@ $(document).ready(function() {
                Highcharts.numberFormat(this.y, 2);
          }
       },
+      
       legend: {
          enabled: true
       },
       exporting: {
          enabled: false
       },
+      plotOptions:{
+      	spline: {
+      		animation: false
+      	}
+      },
+      
       series: [{
          name: 'Random data',
          data: (function() {
@@ -79,7 +99,7 @@ $(document).ready(function() {
             var data = [],
                time = (new Date()).getTime(),
                i;
-            for (i = -100; i <= 0; i++) {
+            for (i = -60; i <= 0; i++) {
                data.push({
                   x: time + i * 1000,
                   y: 0
