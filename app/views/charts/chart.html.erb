@@ -1,6 +1,15 @@
+<script type="text/javascript">
+var query = window.location.search;
+  // Skip the leading ?, which should always be there, 
+  // but be careful anyway
+  if (query.substring(0, 1) == '?') {
+    query = query.substring(1);
+  }
+  var data = query.split(','); 
+  alert(query);
+</script>
 
 <script type="text/javascript">
-
 
 var d;
 function get_data(xx) {
