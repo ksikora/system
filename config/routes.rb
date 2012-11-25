@@ -1,7 +1,7 @@
 SimpleApp::Application.routes.draw do
 
-  resources :devices
-	
+
+
 
 
 	resources :users #mowi ze pod adresem /users są jakies zasoby RESTowe(do ktorych sie mozna odwolac po /id np users/1 oraz wiele innych(po prostu calego resta. np users/1/edit albo /users/new
@@ -34,6 +34,13 @@ SimpleApp::Application.routes.draw do
 
   match 'charts', :to => 'charts#chart'
 	match 'get_data_from_c' => 'charts#get_data_from_c'
+
+
+### devices  
+	resources :devices, only: [:activate, :deactivate, :index, :show]
+	match ':controller/:action/:id'  # uwaga na to! to zbiera wszystko postaci /jednafraza/druga/trzecia. zbierze nawet /devices/34/update wiec musi byc na samym koncu
+
+####/devices
 	# drugi jest potrzebny do pobierania danych do RT wykresu przez resta
   # The priority is based upon order of creation:
   # first created -> highest priority.

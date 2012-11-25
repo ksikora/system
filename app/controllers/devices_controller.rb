@@ -59,20 +59,20 @@ class DevicesController < ApplicationController
   # PUT /devices/1.json
   def update
     @device = Device.find(params[:id])
-    devicename = @device.name
+    #devicename = @device.name
     respond_to do |format|
-      if @device.update_attributes(params[:device])
-	if @device.sends_logs
-	  puts @device.name
-          client = SimpleApp::Application::Sockets[devicename] # wczesniejsza wersja z tutaj wyluskiwanym name nie dziala bo zwracalo nul
-          client.puts 'dupa'     	
-        end
-        format.html { redirect_to @device, notice: 'Device was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @device.errors, status: :unprocessable_entity }
-      end
+    	if @device.update_attributes(params[:device])
+			#	if @device.sends_logs
+	  	#		puts @device.name
+    	#    client = SimpleApp::Application::Sockets[devicename] # wczesniejsza wersja z tutaj wyluskiwanym name nie dziala bo zwracalo nul
+    	#    client.puts 'dupa'     	
+    	#  end
+    	  format.html { redirect_to @device, notice: 'Device was successfully updated.' }
+    	  format.json { head :no_content }
+    	else
+    	  format.html { render action: "edit" }
+    	  format.json { render json: @device.errors, status: :unprocessable_entity }
+    	end
     end
   end
 
@@ -80,6 +80,9 @@ class DevicesController < ApplicationController
   # DELETE /devices/1.json
   def destroy
     @device = Device.find(params[:id])
+		devicename = @device.name
+    client = SimpleApp::Application::Sockets[devicename]
+    client.puts 'turnoff'  
     @device.destroy
 
     respond_to do |format|
@@ -87,6 +90,33 @@ class DevicesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+
+  def activate
+    @device = Device.find(params[:id])
+    devicename = @device.name
+    @device.update_attributes(:sends_logs => true)
+    client = SimpleApp::Application::Sockets[devicename]
+    client.puts 'turnon'  
+	  respond_to do |format|
+    	format.html { redirect_to devices_path, notice: 'Device was successfully turned on.' }
+			format.json { render json: @devices }
+		end
+  end
+
+	def deactivate
+    @device = Device.find(params[:id])
+    devicename = @device.name
+    @device.update_attributes(:sends_logs => false)
+    client = SimpleApp::Application::Sockets[devicename]
+    client.puts 'turnoff'  
+	  respond_to do |format|
+    	format.html { redirect_to devices_path, notice: 'Device was successfully turned off.' }
+			format.json { render json: @devices }
+		end
+	end
+
+
 
 
 end
