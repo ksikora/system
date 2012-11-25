@@ -1,34 +1,29 @@
 <h1>Listing devices</h1>
-<div class="center hero-unit"> 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Dtype</th>
-    <th>Sends logs</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @devices.each do |device| %>
-  <tr>
-    <td><%= device.name %></td>
-    <td><%= device.dtype %></td>
-    <td><%= device.sends_logs %></td>
-		<% if device.sends_logs == false %>
-    	<td><%= link_to "Turn on",{ :controller => "devices", :action => "activate", :id => device}, :class => "btn btn-mini btn-success" %></td>
-									<!--uwaga na nawiasy wasowe, one musza byc bo inaczej jaja sie dzieja -->
-		<% else %>
-			<td><%= link_to "Turn off",{ :controller => "devices", :action => "deactivate", :id => device}, :class => "btn btn-mini btn-danger" %></td>
+<table class="table">
+	<thead>
+		<tr>
+		  <th>Name</th>
+		  <th>Dtype</th>
+		  <th>Sends logs</th>
+		</tr>
+	</theard>
+	<tbody>
+		<% @devices.each do |device| %>
+			<tr>
+				<td><%= device.name %></td>
+				<td><%= device.dtype %></td>
+				<td><%= device.sends_logs %></td>
+				<% if device.sends_logs == false %>
+					<td><%= link_to "Turn on",{ :controller => "devices", :action => "activate", :id => device}, class: "btn btn-small btn-success" %></td>
+											<!--uwaga na nawiasy wasowe, one musza byc bo inaczej jaja sie dzieja -->
+				<% else %>
+					<td><%= link_to "Turn off",{ :controller => "devices", :action => "deactivate", :id => device}, class: "btn btn-small btn-danger" %></td>
+				<% end %>
+				<td><%= link_to 'Destroy', device, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-small btn-primary" %></td>
+				<td><%= link_to 'Show Graph' , '#', :class => "btn btn-small btn-info" %></td>
+				<td><%= link_to 'Show raport', '#', class: "btn btn-small btn-warning"%></td>
+				<td><%# link_to 'Edit', edit_device_path(device), :class => "btn btn-small btn-primary" %></td>
+			</tr>
 		<% end %>
-    <td><%= link_to 'Destroy', device, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-mini btn-primary" %></td>
-    <td><%= link_to 'Show', device, :class => "btn btn-mini btn-primary" %></td>
-    <td><%# link_to 'Edit', edit_device_path(device), :class => "btn btn-mini btn-primary" %></td>
-
-  </tr>
-<% end %>
+	<tbody>
 </table>
-
-<br />
-</div>
-<%# link_to 'New Device', new_device_path %>
