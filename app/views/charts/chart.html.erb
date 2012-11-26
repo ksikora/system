@@ -46,6 +46,7 @@ $(document).ready(function() {
                      
 										 
  										 y = get_data(xx);
+ 										 //y = Math.random(1)
 										 if(typeof(y) == undefined)
 										 {
 										 	 y = 0;
@@ -106,7 +107,7 @@ $(document).ready(function() {
             var data = [],
                time = (new Date()).getTime(),
                i;
-            for (i = -60; i <= 0; i++) {
+            for (i = -100; i <= 0; i++) {
                data.push({
                   x: time + i * 1000,
                   y: 0

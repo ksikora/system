@@ -1,0 +1,4 @@
+sudo apt-get install beanstalkd
+sudo apt-get install python-yaml
+sudo apt-get install python-bsddb3
+
