@@ -7,6 +7,8 @@ Uzywanie Active record do wydobywania operacji z bazy danych:
 User.find(1)
 User.find_by_email("kukumail")
 
+User.delete_all
+
 #modyfikowanie istniejacych
 user = User.first
 user.email = dupa;
@@ -46,6 +48,14 @@ git add -u
 git checkout -b newbranch
 git checkout existingbranch
 git branch -> list all branch
+git fetch # load all branches from remote repository
+git checkout -b test origin/test # checkout remote branch test
+git branch -r / git branch -a# list remote branch
+
+
+git fetch # to trzeba przewaznie wykonac pod tym ponizszym jesli sie cos pierdoli
+git merge origin/jurasbranch # pobiera najnowsza wersje brancha z serwera jesli zaszly zmiany
+
 
 
 git remote -v
@@ -60,3 +70,11 @@ heroku keys:add
 
 heroku open
 heroku rename newdomain
+
+heroku logs # pokazuje logi heroku
+
+# prbolem z template error, 500 internal server error
+
+heroku run rake db:version
+heroku rake db:migrate
+

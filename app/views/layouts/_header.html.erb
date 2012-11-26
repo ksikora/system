@@ -10,9 +10,7 @@
 					<nav> 																					<!-- nav to tez pewnego rodzaju sekcja -->
 						<ul class="nav pull-right">                   <!-- unordered list -->
 						    <% if signed_in? %> <!-- funkcja z helpera, ktora sprawdza czy istnieje jakis current_user -->
-
-							    <li><%= link_to "Home", root_path %></li>  <!-- link_to to helper ktory wykonuje <a herf="http...", przy czym # to stub zamiast adresu(UPDATE: zamienilismy stuba na zmienna ktora reprezentuje sciezke do strony) a Home sie nam wyswietli -->
-
+<!-- link_to to helper ktory wykonuje <a herf="http...", przy czym # to stub zamiast adresu(UPDATE: zamienilismy stuba na zmienna ktora reprezentuje sciezke do strony) a Home sie nam wyswietli -->
 							    <li><%= link_to "Help", help_path %></li>  <!-- li - list item -->
 							    <li><%= link_to "Devices", devices_path %></li>
 							    <li id="fat-menu" class="dropdown">
