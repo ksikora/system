@@ -27,7 +27,3 @@ def poll(memserv, memport, persserv, persport, rt_port):
 	
     finally:
         print "messages pulled from queue ", i , "assssssssssssssssssssssssssss"
-
-
-
-
