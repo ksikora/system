@@ -77,6 +77,7 @@ module SimpleApp
     
 
 
+
     #$threads = [] # tablica hashy postaci nazwawatku => referencja do watku
     #threads = [ "watek" ] 
     
@@ -176,6 +177,12 @@ module SimpleApp
 	    puts device.to_s + " asdasdasdasdas"
 	    #### TMP code
 	    return Math.sin(device).to_s + ' ' + Math.cos(device).to_s
+		    if not @deviceList.has_key?(device)
+			    return 'no_data_found'
+		    end
+		    @deviceList.fetch(device)
+	    end
+
     end
 
   end
@@ -199,15 +206,4 @@ module SimpleApp
     end
   end
 end
-
-
-
-
-
-
-
-
-
-
-
 
