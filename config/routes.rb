@@ -4,6 +4,9 @@ SimpleApp::Application.routes.draw do
 
 
 
+  resources :logs
+
+
 	resources :users #mowi ze pod adresem /users są jakies zasoby RESTowe(do ktorych sie mozna odwolac po /id np users/1 oraz wiele innych(po prostu calego resta. np users/1/edit albo /users/new
 
 	resources :sessions, only: [:new, :create, :destroy] # tylko wymienione restowe operacje sa dozwolone new -> wyswietlanie strony signin(GET), create -> zatwierdzanie formularza na stronie signin -> (POST), natomiast destroy jest generowane poprzez nacisniecie signout 

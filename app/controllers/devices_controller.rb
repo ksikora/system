@@ -80,8 +80,7 @@ class DevicesController < ApplicationController
   # DELETE /devices/1.json
   def destroy
     @device = Device.find(params[:id])
-		devicename = @device.name
-    client = SimpleApp::Application::Sockets[devicename]
+    client = SimpleApp::Application::Sockets[@device.id]
     client.puts 'turnoff'  
     @device.destroy
 
@@ -94,9 +93,8 @@ class DevicesController < ApplicationController
 
   def activate
     @device = Device.find(params[:id])
-    devicename = @device.name
     @device.update_attributes(:sends_logs => true)
-    client = SimpleApp::Application::Sockets[devicename]
+    client = SimpleApp::Application::Sockets[@device.id]
     client.puts 'turnon'  
 	  respond_to do |format|
     	format.html { redirect_to devices_path, notice: 'Device was successfully turned on.' }
@@ -106,9 +104,8 @@ class DevicesController < ApplicationController
 
 	def deactivate
     @device = Device.find(params[:id])
-    devicename = @device.name
     @device.update_attributes(:sends_logs => false)
-    client = SimpleApp::Application::Sockets[devicename]
+    client = SimpleApp::Application::Sockets[@device.id]
     client.puts 'turnoff'  
 	  respond_to do |format|
     	format.html { redirect_to devices_path, notice: 'Device was successfully turned off.' }
