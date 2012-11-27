@@ -6,7 +6,6 @@ require "action_controller/railtie"
 require "action_mailer/railtie"
 require "active_resource/railtie"
 require "sprockets/railtie"
-
 # require "rails/test_unit/railtie"
 
 if defined?(Bundler)
@@ -66,17 +65,38 @@ module SimpleApp
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
+
+
+
 ################ konfiguracja servera 
 
     require 'socket'
-
     Sockets=Hash.new
+    
+    @myDataAdapter = nil
+    
 
 
     #$threads = [] # tablica hashy postaci nazwawatku => referencja do watku
     #threads = [ "watek" ] 
-
+    
+    def getDataFromDataAdapter(x)
+      if @myDataAdapter == nil
+        @myDataAdapter = RealTimeDataAdapter.new
+      end
+      return @myDataAdapter.getData(x)
+    end
+    
+    def sendDataToDataAdapter(x)
+      if @myDataAdapter == nil
+        @myDataAdapter = RealTimeDataAdapter.new
+      end
+      return @myDataAdapter.processData(x)
+    end
+    
+    
     def runserv
+################ Obiekt do przekazywanai danych do gui  
       #file = File.open '../log/tcpserver.log', 'a'
       #file = File.new 'dupa.log', 'w'
       server = TCPServer.new 21001 
@@ -84,16 +104,16 @@ module SimpleApp
       #file.puts 'server initialized'
       puts 'server initialized'
       loop do
-	  Thread.start(server.accept) do |client|
-		name = client.gets
-		dtype = client.gets
-		Sockets[name]=client
-		hash = Hash[name: name, dtype: dtype, sends_logs: false]
-		puts hash
-		@device = Device.new(hash) 
-		@device.save
-		puts 'device saved to database'
-	end
+	      Thread.start(server.accept) do |client|
+		    name = client.gets
+		    dtype = client.gets
+		    Sockets[name]=client
+		    hash = Hash[name: name, dtype: dtype, sends_logs: false]
+		    puts hash
+		    @device = Device.new(hash) 
+		    @device.save
+		    puts 'device saved to database'
+	    end
       end
     end	
 
@@ -103,4 +123,91 @@ module SimpleApp
 
 
   end
+  
+############## obiekt przekazujacy rt dane do controllera
+  
+
+  class RealTimeDataAdapter
+    require 'thread'
+    def initialize
+	    @deviceList = Hash.new	
+	    @mutex = Mutex.new
+    end
+
+  #	def processData(arg)
+  #		arr = arg.split(',')
+  #		@mutex.synchronize do
+  #			if not @deviceList.has_key?(arr[0])
+  #				queue = Array.new 
+  #				queue << arr[1..arr.length-1].join(',')
+  #				@deviceList.store(arr[0],queue)
+  #			else
+  #				@deviceList.fetch(arr[0]) << arr[1..arr.length-1].join(',')
+  #				if @deviceList.fetch(arr[0]).length == 21
+  #					@deviceList.fetch(arr[0]).delete_at(0)
+  #					@deviceList.fetch(arr[0]).compact!
+  #				end
+  #			end
+  #		end
+  #		puts @deviceList.to_s
+  #	end
+
+
+    def processData(arg)
+	    arr = arg.split(',')
+	    @mutex.synchronize do
+		    if not @deviceList.has_key?(arr[0])
+			    @deviceList.store(arr[0],arr[1..arr.length-1].join(','))
+		    else
+			    @deviceList.delete(arr[0])
+			    @deviceList.store(arr[0],arr[1..arr.length-1].join(','))
+		    end
+	    end
+	    puts @deviceList.to_s
+    end
+
+    def getData(device)
+	    @mutex.synchronize do
+		    #if not @deviceList.has_key?(device)
+			  #  return 'no_data_found'
+		    #end
+		    #@deviceList.fetch(device)
+	    end
+	    puts device.to_s + " asdasdasdasdas"
+	    #### TMP code
+	    return Math.sin(device).to_s + ' ' + Math.cos(device).to_s
+    end
+
+  end
+  
+  
+############## obiekt przekazujacy rt dane do controllera - koniec
+
+
+############## BEANSTALKD receiver
+  class BeanstalkdDataREceiver
+    def initilize
+      @beanstalk = Beanstalk::Pool.new(['localhost:12347'])
+    end
+    
+    def run
+      loop do
+        job = @beanstalkd.reserve
+        SimpleApp::Application::sendDataToDataAdapter(j.body)
+      end
+    
+    end
+  end
 end
+
+
+
+
+
+
+
+
+
+
+
+

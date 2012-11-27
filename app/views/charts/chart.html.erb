@@ -11,11 +11,19 @@ var query = window.location.search;
 
 <script type="text/javascript">
 
+function makeitsnow() { running = !running;}
+var running = true;
 var d;
+var d2;
 function get_data(xx) {
 //tutaj URL bedzie trzeba przerobic - jako argument powinien dostawac ID urzadzenia do monitorowaniwania
 $.get('/get_data_from_c?x='+xx, function(data){
-d = parseFloat(data);
+tmp = data.split(" ");
+d1 = parseFloat(tmp[0]);
+d2 = parseFloat(tmp[1]);
+d = Array();
+d.push(d1);
+d.push(d2);
 });
 return d;
 };
@@ -35,29 +43,33 @@ $(document).ready(function() {
    chart = new Highcharts.Chart({
       chart: {
          renderTo: 'chart_container',
+         animation: false,
          marginRight: 10,
          events: {
             load: function() {
-   
-               // set up the updating of the chart every 0.2 seconds
-               var series = this.series[0];
-               setInterval(function() {
-                  var x = (new Date()).getTime(), // current time
-                     
-										 
- 										 y = get_data(xx);
- 										 //y = Math.random(1)
-										 if(typeof(y) == undefined)
-										 {
-										 	 y = 0;
-										 }
-                     //y = Math.sin(xx);
-                     
-                  	 xx = xx+ 0.1;
-                  	 series.addPoint([x, y], true, true);
-
-
-               }, 300);
+                   
+                    // set up the updating of the chart every 0.2 seconds
+                         var series = this.series[0];
+                         var series2 = this.series[1];
+                         setInterval(function() {
+                         var x = (new Date()).getTime(), // current time
+                         
+										     
+     										 y = get_data(xx);
+     										 //y = Math.random(1)
+										     if(typeof(y[0]) == undefined)
+										     {
+										     	 y[0] = 0;
+										     }
+                         //y = Math.sin(xx);
+                         
+                      	 xx = xx+ 0.1;
+                      	 if(running)
+                         {
+                            	 series.addPoint([x, y[0]], true, true);
+                            	 series2.addPoint([x, y[1]], true, true); 
+                         }
+               }, 100);
             }
          }
       },
@@ -66,7 +78,7 @@ $(document).ready(function() {
       },
       xAxis: {
          type: 'datetime',
-         tickPixelInterval: 25,
+         tickPixelInterval: 10,
 				 labels: {
 				 		enabled: false
 				 }
@@ -95,6 +107,16 @@ $(document).ready(function() {
          enabled: false
       },
       plotOptions:{
+        area: {
+          animation: false
+        },
+        line: {
+          animation: false,
+          shadow: false
+        },
+        gauge: {
+          animation: false
+        },
       	spline: {
       		animation: false
       	}
@@ -107,7 +129,23 @@ $(document).ready(function() {
             var data = [],
                time = (new Date()).getTime(),
                i;
-            for (i = -100; i <= 0; i++) {
+            for (i = -50; i <= 0; i++) {
+               data.push({
+                  x: time + i * 1000,
+                  y: 0
+               });
+            }
+            return data;
+         })()
+      },
+      {
+         name: 'Random data',
+         data: (function() {
+            // generate an array of random data
+            var data = [],
+               time = (new Date()).getTime(),
+               i;
+            for (i = -50; i <= 0; i++) {
                data.push({
                   x: time + i * 1000,
                   y: 0
@@ -122,6 +160,8 @@ $(document).ready(function() {
 });
 </script>
 
+
+<button onclick="makeitsnow();">Start/Stop</button>
 
 
 
