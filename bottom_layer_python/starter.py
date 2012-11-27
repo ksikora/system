@@ -59,7 +59,7 @@ if __name__ == '__main__':
     try:
         bs_pids = init_beanstalk(bs_ports)
         print "Starting UDP receiver process...",
-        receiver_process = Process(target=receive, args=('127.0.0.1', int(bs_ports[0]),))
+        receiver_process = Process(target=receive, args=('127.0.0.1', int(bs_ports[0]), int(bs_ports[2]),))
         receiver_process.start()
         print "\t\t\tDone."
         print "Starting MQ transporter process...",
