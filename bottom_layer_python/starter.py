@@ -13,28 +13,41 @@ def init_beanstalk(bs_ports):
         os.system("beanstalkd -p "+ bs_ports[0]+" &")
     except:
         print "\t\tFailed."    
-    print "\t\tDone."
     sleep(1)
+    print "\t\tDone."
     ps_aux = commands.getoutput('ps aux|grep "beanstalkd -p ' + bs_ports[0] + '"')
     mem_pid = ps_aux.split("\n")[0].split()[1]
     tmp = []
     tmp.append(mem_pid)
     print "Starting persistent beanstalkd on port " + bs_ports[1],
-    os.system("beanstalkd -p "+ bs_ports[1]+" -b /home/ksikora/bslog &")
-    print "\t\tDone."
+    os.system("rm -rf " + bs_ports[3])
+    os.system("mkdir " + bs_ports[3])
+    os.system("beanstalkd -p "+ bs_ports[1]+" -b "  + bs_ports[3] +" &")
     sleep(1)
+    print "\t\tDone."
     ps_aux = commands.getoutput('ps aux|grep "beanstalkd -p ' + bs_ports[1] + '"')
     pers_pid = ps_aux.split("\n")[0].split()[1]
     tmp.append(pers_pid)
+    print "Starting real-time designated beanstalkd on port " + bs_ports[2],
+    os.system("beanstalkd -p "+ bs_ports[2]+" &")
+    sleep(1)
+    print "\tDone."
+    ps_aux = commands.getoutput('ps aux|grep "beanstalkd -p ' + bs_ports[2] + '"')
+    rt_pid = ps_aux.split("\n")[0].split()[1]
+    tmp.append(rt_pid)    
     return tmp
 
 def load_beanstalk_ports():
     f = open("conf.ig")
     mem_bs = f.readline().split()[1]
     pers_bs = f.readline().split()[1]
+    rt_bs = f.readline().split()[1]
+    pers_dir = f.readline().split()[1]
     tmp= []
     tmp.append(mem_bs)
     tmp.append(pers_bs)
+    tmp.append(rt_bs)
+    tmp.append(pers_dir)
     return tmp 
 
 if __name__ == '__main__':
@@ -50,10 +63,10 @@ if __name__ == '__main__':
         receiver_process.start()
         print "\t\t\tDone."
         print "Starting MQ transporter process...",
-        poller_process = Process(target=poll, args=('127.0.0.1', int(bs_ports[0]),'127.0.0.1', int(bs_ports[1]),))
+        poller_process = Process(target=poll, args=('127.0.0.1', int(bs_ports[0]),'127.0.0.1', int(bs_ports[1]),int(bs_ports[2]),))
         poller_process.start()
         print "\t\t\tDone."
-        print "\n\ntype exit to ... surpirise surprise: exit"
+        print "\n\ntype exit to ... surpirise surprise: exit\n\n"
         while(True):
             tmp = raw_input("")
             if tmp == 'exit':
@@ -72,4 +85,7 @@ if __name__ == '__main__':
         print 'Killing persistent beanstalkd...',
         os.system("kill -kill " + bs_pids[1])
         print "\t\t\tDone."
+        print 'Killing real-time designated beanstalkd...',
+        os.system("kill -kill " + bs_pids[2])
+        print "\t\tDone."
         
