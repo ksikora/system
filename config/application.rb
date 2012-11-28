@@ -165,13 +165,30 @@ end
     Sockets=Hash.new
     
     @myDataAdapter = nil
-    
+    @myRTswitch = nil    
 
 
 
 
     #$threads = [] # tablica hashy postaci nazwawatku => referencja do watku
     #threads = [ "watek" ] 
+    
+    
+################ wlaczanie i wylaczanie RT ################
+     def turnOnRtChart(x)
+       if @myRTswitch == nil
+          @myRTswitch = RTswitch.new  
+       end
+       @myRTswitch.turnOn(x)
+
+     end
+    
+     def turnOffRtChart(x)
+       if @myRTswitch == nil
+          @myRTswitch = RTswitch.new  
+       end
+       @myRTswitch.turnOff(x)
+     end
     
     def getDataFromDataAdapter(x)
       if @myDataAdapter == nil
@@ -195,7 +212,8 @@ end
 
       #file.puts 'server initialized'
       puts 'server initialized'
-      b = Thread.new {runBeanstalkdDataReceiver}
+      
+      b = Thread.new {runBeanstalkdRTDataReceiver}
       loop do
 				Thread.start(server.accept) do |client|
 					name = client.gets
@@ -224,15 +242,23 @@ end
 
 
 ############## koniec konfiguracj servera tcp
-   def runBeanstalkdDataReceiver
+   def runBeanstalkdRTDataReceiver
       beanstalk = Beanstalk::Pool.new(['127.0.0.1:12348'])
-      puts 'bs connceted'
       loop do
         job = beanstalk.reserve
         sendDataToDataAdapter(job.body)
       end
     end
 
+
+def runBeanstalkdDataReceiver
+      beanstalk = Beanstalk::Pool.new(['127.0.0.1:12346'])
+      sock = UDPSocket.open
+      loop do
+        job = beanstalk.reserve
+        sock.send(j.body, 0, 'localhost', 210021)
+      end
+    end
 ############# init threads #################################
 
     a = Thread.new {runserv}
@@ -247,6 +273,69 @@ end
 
 
   end
+
+############## obiekt aktywujacy i wylaczajacy rt
+  class RTswitch
+  
+    def initialize
+      @deviceWatchers = Hash.new
+    end
+    
+    def turnOn(x)
+      
+      if not @deviceWatchers.has_key?(x)
+        @deviceWatchers.store(x,0)
+      end
+      
+      @deviceWatchers[x] = @deviceWatchers[x]+1
+      puts @deviceWatchers[x]
+      begin
+        f = open('plik.tmp')
+        line = f.readline
+      rescue
+        line = ""
+      end
+      begin
+        File.delete(f)
+      rescue
+      
+      end
+      if not line.split(' ').include?(x.to_s)
+        line = line + ' ' + x.to_s 
+      end
+      f = open('plik.tmp','w')
+      f.write(line)
+      f.close
+    end
+    
+    def turnOff(x)
+      if @deviceWatchers[x] == 1
+        begin
+          f = open('plik.tmp')
+          line = f.readline
+        rescue
+          line = ""
+        end
+
+        begin
+          File.delete(f)
+        rescue
+
+        end
+        if line.split(' ').include?(x.to_s) 
+          tmp = line.split(' ')
+          tmp.delete(x.to_s)
+          line = tmp.join(' ')
+        end
+        f = open('plik.tmp','w')
+        f.write(line)
+        f.close
+      end
+      @deviceWatchers[x] = @deviceWatchers[x]-1
+    end
+  
+  end
+
   
 ############## obiekt przekazujacy rt dane do controllera
   

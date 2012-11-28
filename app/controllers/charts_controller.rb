@@ -5,8 +5,17 @@ class ChartsController < ApplicationController
 	  		#puts SimpleApp::Application::getDataFromDataAdapter(0.1) + "asdasdasdasdasdasdasdasd"
 	  		# 
 	  		# tmp = Math.sin(params[:x].to_f).to_s + ' ' + Math.cos(params[:x].to_f).to_s
-			  format.html { render :text => SimpleApp::Application::getDataFromDataAdapter(params[:x].to_i).to_s }
+			  format.html { render :text => SimpleApp::Application::getDataFromDataAdapter(params[:id].to_i).to_s }
 			end
 	  end
 	  
+	  def turnOn()
+	    SimpleApp::Application::turnOnRtChart(params[:id].to_i)
+	    format.html { render :text => "done" }
+	  end
+	  
+	  def turnOff()
+	    SimpleApp::Application::turnOffRtChart(params[:id].to_i)
+	    format.html { render :text => "done" }
+	  end
 end
