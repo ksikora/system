@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+
 gem 'rails', '3.2.9'
 gem 'therubyracer'
 gem 'bootstrap-sass', '2.0.2' # sass to jezyk podobny do LESS CSS, ktorego normalnie uzywa bootstrap
@@ -23,6 +24,7 @@ group :assets do
 end
 
 gem 'jquery-rails', '2.0.2'
+gem 'beanstalk-client'
 
 group :test do
   gem 'rspec-rails','2.10.0'

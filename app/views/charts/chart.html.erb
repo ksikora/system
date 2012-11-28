@@ -1,29 +1,19 @@
-<script type="text/javascript">
-var query = window.location.search;
-  // Skip the leading ?, which should always be there, 
-  // but be careful anyway
-  if (query.substring(0, 1) == '?') {
-    query = query.substring(1);
-  }
-  var data = query.split(','); 
-//  alert(query);
-</script>
+
 
 <script type="text/javascript">
-
-function makeitsnow() { running = !running;}
-var running = true;
+var isRunning = true;
+function makeitsnow() { isRunning = !isRunning;}
 var d;
 var d2;
 function get_data(xx) {
 //tutaj URL bedzie trzeba przerobic - jako argument powinien dostawac ID urzadzenia do monitorowaniwania
 $.get('/get_data_from_c?x='+xx, function(data){
 tmp = data.split(" ");
-d1 = parseFloat(tmp[0]);
-d2 = parseFloat(tmp[1]);
 d = Array();
-d.push(d1);
-d.push(d2);
+for(var i=0;i<tmp.length;i++)
+{
+  d.push(parseFloat(tmp[i]));
+}
 });
 return d;
 };
@@ -35,8 +25,9 @@ useUTC: false
 }
 });
 
-
-var plotting = true;
+var deviceId = null;
+var isRunning = true;
+var firstTime = true;
 var chart;
 var xx = 0.0;
 $(document).ready(function() {
@@ -49,27 +40,58 @@ $(document).ready(function() {
             load: function() {
                    
                     // set up the updating of the chart every 0.2 seconds
-                         var series = this.series[0];
-                         var series2 = this.series[1];
-                         setInterval(function() {
-                         var x = (new Date()).getTime(), // current time
-                         
-										     if(running)
+                    
+                        var query = window.location.search;
+                        // Skip the leading ?, which should always be there, 
+                        // but be careful anyway
+                        if (query.substring(0, 1) == '?') {
+                          query = query.substring(1);
+                        }
+                        var data = query.split(','); 
+                        deviceId = data[0];
+                        for(var i=1;i<data.length;i++)
+                        {
+                          this.addSeries({
+                                           name: data[i],
+                                           data: (function() {
+                                              // generate an array of random data
+                                              var data = [],
+                                                 time = (new Date()).getTime(),
+                                                 i;
+                                              for (i = -150; i <= 0; i++) {
+                                                 data.push({
+                                                    x: time + i * 1000,
+                                                    y: 0
+                                                 });
+                                              }
+                                              return data;
+                                           })()
+                                        });
+                        } 
+                    
+                    
+                    
+                         mySeries = []
+                         for(var i=0;i<this.series.length;i++)
                          {
-       										 y = get_data(xx);
-       										 //y = Math.random(1)
-										       if(typeof(y[0]) != undefined)
-										       {
-										           xx = xx+ 0.1;
-                            	 
-                                  	 series.addPoint([x, y[0]], true, true);
-                                  	 series2.addPoint([x, y[1]], true, true); 
-                           } 
-									       }
+                            mySeries.push(this.series[i]);   
+                         }
+                         setInterval(function() {
+                         if(isRunning)
+                         {
+                             var x = (new Date()).getTime(), // current time
+                             y = get_data(deviceId);
+
+                             for(var i=0;i<y.length;i++)
+                             {
+                                mySeries[i].addPoint([x,y[i]], true, true);
+                             }
+                         }
+                         
                          //y = Math.sin(xx);
                          
                       	 
-               }, 100);
+               }, 500);
             }
          }
       },
@@ -122,7 +144,7 @@ $(document).ready(function() {
       	}
       },
       
-      series: [{
+ /*     series: [{
          name: 'Random data',
          data: (function() {
             // generate an array of random data
@@ -152,11 +174,30 @@ $(document).ready(function() {
             }
             return data;
          })()
-      }]
+      }]*/
    });
-   
-   
 });
+function initCharts()
+{
+var query = window.location.search;
+  // Skip the leading ?, which should always be there, 
+  // but be careful anyway
+  if (query.substring(0, 1) == '?') {
+    query = query.substring(1);
+  }
+  var data = query.split(','); 
+  deviceId = data[0];
+  for(var i=1;i<data.length;i++)
+  {
+    chart.addSeries({name: data[i]});  
+  }
+}
+</script>
+
+<script type="text/javascript">
+
+
+//  alert(query);
 </script>
 
 

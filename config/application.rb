@@ -6,6 +6,7 @@ require "action_controller/railtie"
 require "action_mailer/railtie"
 require "active_resource/railtie"
 require "sprockets/railtie"
+require "beanstalk-client"
 # require "rails/test_unit/railtie"
 
 if defined?(Bundler)
@@ -85,7 +86,7 @@ module SimpleApp
       if @myDataAdapter == nil
         @myDataAdapter = RealTimeDataAdapter.new
       end
-      return @myDataAdapter.getData(x)
+        return @myDataAdapter.getData(x)
     end
     
     def sendDataToDataAdapter(x)
@@ -104,6 +105,7 @@ module SimpleApp
 
       #file.puts 'server initialized'
       puts 'server initialized'
+      b = Thread.new {runBeanstalkdDataReceiver}
       loop do
 	      Thread.start(server.accept) do |client|
 		    name = client.gets
@@ -121,7 +123,14 @@ module SimpleApp
     a = Thread.new {runserv}
 
 ############## koniec konfiguracj servera tcp
-
+   def runBeanstalkdDataReceiver
+      beanstalk = Beanstalk::Pool.new(['127.0.0.1:12348'])
+      puts 'bs connceted'
+      loop do
+        job = beanstalk.reserve
+        sendDataToDataAdapter(job.body)
+      end
+    end 
 
   end
   
@@ -155,34 +164,25 @@ module SimpleApp
 
 
     def processData(arg)
-	    arr = arg.split(',')
+	    arr = arg.split(':')
 	    @mutex.synchronize do
 		    if not @deviceList.has_key?(arr[0])
-			    @deviceList.store(arr[0],arr[1..arr.length-1].join(','))
+			    @deviceList.store(arr[0],arr[1..arr.length-1].join(' '))
 		    else
 			    @deviceList.delete(arr[0])
-			    @deviceList.store(arr[0],arr[1..arr.length-1].join(','))
+			    @deviceList.store(arr[0],arr[1..arr.length-1].join(' '))
 		    end
 	    end
-	    puts @deviceList.to_s
     end
 
     def getData(device)
 	    @mutex.synchronize do
-		    #if not @deviceList.has_key?(device)
-			  #  return 'no_data_found'
-		    #end
-		    #@deviceList.fetch(device)
-	    end
-	    puts device.to_s + " asdasdasdasdas"
-	    #### TMP code
-	    return Math.sin(device).to_s + ' ' + Math.cos(device).to_s
-		    if not @deviceList.has_key?(device)
-			    return 'no_data_found'
+		    if not @deviceList.has_key?(device.to_s)
+		      puts 'walke' + device.to_s + " " + @deviceList.to_s
+			    return '0.0'
 		    end
-		    @deviceList.fetch(device)
+		    @deviceList.fetch(device.to_s)
 	    end
-
     end
 
   end
@@ -191,19 +191,9 @@ module SimpleApp
 ############## obiekt przekazujacy rt dane do controllera - koniec
 
 
-############## BEANSTALKD receiver
-  class BeanstalkdDataREceiver
-    def initilize
-      @beanstalk = Beanstalk::Pool.new(['localhost:12347'])
-    end
+############## BEANSTALKD receiver  
     
-    def run
-      loop do
-        job = @beanstalkd.reserve
-        SimpleApp::Application::sendDataToDataAdapter(j.body)
-      end
     
-    end
-  end
+    
 end
 

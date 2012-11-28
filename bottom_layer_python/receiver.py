@@ -29,8 +29,20 @@ def receiveFromProcessQueue(queue, server, port):
 	while(True):
 		msg = queue.get()
 		data1 = job.Job(data=msg[0], conn=connection)
+		global rt_bs_con
+		data2 = job.Job(data=msg[0], conn=rt_bs_con)
+		global rtDevices
+		global index
+		pid = data2.data.split(":")[0]
+		tmp = False
+		for i in range(0,index.value):
+			if rtDevices[i] == int(pid):
+				tmp = True
+				break
+		if tmp == True:
+			data2.Queue()
 		data1.Queue()
-		rt_process(data1)
+		
 
 rt_bs_con = None
 rtDevices = None
@@ -46,6 +58,7 @@ def receive(server,port, rt_port):
 	rtUpdaterProcess.start()
 	global rt_bs_con
 	rt_bs_con = serverconn.ServerConn(server, rt_port)
+	rt_bs_con.job = job.Job
 	received = Echo(queue)
 	receiver_process = Process(target=receiveFromProcessQueue, args=(queue, server, port,))
 	receiver_process.start()
@@ -58,22 +71,6 @@ def receive(server,port, rt_port):
 		rtUpdaterProcess.terminate()
 	#while True:
 
-def rt_process(data):
-	global rtDevices
-	global index
-	pid = data.data.split(":")[0]
-	tmp = False
-	for i in range(0,index.value):
-		if rtDevices[i] == int(pid):
-			tmp = True
-			break
-	if tmp == True:
-		data.conn = rt_bs_con
-		data.Queue
-		print "rt"
-	else:
-		print "no rt"
-	print rtDevices[0],type(rtDevices[0]), int(pid), type(int(pid)), tmp
 	
 	
 #def checkIfRt(data):
