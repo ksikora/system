@@ -1,4 +1,6 @@
 require File.expand_path('../boot', __FILE__)
+#require File.expand_path('../../db/bind', __FILE__) # zalaczamy binder
+
 
 # Pick the frameworks you want:
 require "active_record/railtie"
@@ -11,7 +13,7 @@ require "beanstalk-client"
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  Bundler.require(*Rails.groups(:assets => %w(development test))) # 						laduje gemy
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
 end
@@ -67,10 +69,101 @@ module SimpleApp
     config.assets.version = '1.0'
 
 
+############## binder ############
+  	require 'socket'
 
+
+
+		DIVIDER = 50
+		Partial_logs = Hash.new
+
+		def binder()
+
+			soc = UDPSocket.new
+			soc.bind("127.0.0.1",210021)
+
+
+			puts 'UDP for binder successfuly binded'
+
+			#c = Thread.new {testbinder} # usuniecie tego odpala test
+				
+			loop do
+				#puts 'odebrano dane'
+
+			
+				id = soc.recv(10000)
+				cont = soc.recv(10000)
+
+				if Partial_logs[id] == nil
+					Partial_logs[id]= [0, ""]
+				end
+
+				parametry = Partial_logs[id]
+				counter = parametry[0]
+				chain = parametry[1]
+			
+				if counter < DIVIDER
+					chain = "#{chain}:#{cont}"
+					counter = counter +1
+					Partial_logs[id]=[counter,chain]
+				else
+					puts 'wale do bazy'
+					@log = Log.new
+					@log.device_id = @device_id
+					@log.content = chain
+					@log.save
+					chain = ""
+					counter = 0
+					Partial_logs[id]=[counter,chain]
+				end
+			end
+		end
+
+
+		b = Thread.new {binder}
+
+
+########## test binder ################
+def testbinder
+		soc2 = UDPSocket.new
+		soc2.connect("127.0.0.1",210021)
+
+		puts "dupa"
+
+		sleep 4
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+		soc2.send "1", 0
+		soc2.send "aaaaa", 0
+
+end
 
 ################ konfiguracja servera 
-
+		
     require 'socket'
     Sockets=Hash.new
     
@@ -107,16 +200,27 @@ module SimpleApp
       puts 'server initialized'
       b = Thread.new {runBeanstalkdDataReceiver}
       loop do
-	      Thread.start(server.accept) do |client|
-		    name = client.gets
-		    dtype = client.gets
-		    Sockets[name]=client
-		    hash = Hash[name: name, dtype: dtype, sends_logs: false]
-		    puts hash
-		    @device = Device.new(hash) 
-		    @device.save
-		    puts 'device saved to database'
-	    end
+				Thread.start(server.accept) do |client|
+					name = client.gets
+					dtype = client.gets
+					hash = Hash[name: name, dtype: dtype, sends_logs: false]
+					puts hash
+					@device = Device.new(hash) 
+					
+					@device.save
+					puts 'device saved to database'
+					Sockets[@device.id]=client
+					client.puts @device.id
+#					close = client.gets
+	#				if close == "close"
+		#				Socket.reject! { |k| k==@device.id }
+			#		end
+				#	if close == "close\n"
+				#		Socket.reject! { |k| k==@device.id }
+				#	end
+
+
+				end
       end
     end	
 
@@ -130,7 +234,14 @@ module SimpleApp
         job = beanstalk.reserve
         sendDataToDataAdapter(job.body)
       end
-    end 
+    end
+
+
+
+############## koniec konfiguracj servera tcp #############
+
+############## usuwanie nieuzywanych socketow #################
+
 
   end
   
