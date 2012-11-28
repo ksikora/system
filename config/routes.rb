@@ -40,7 +40,9 @@ SimpleApp::Application.routes.draw do
 
 
 ### devices  
+match ':controller/:action'
 	resources :devices, only: [:activate, :deactivate, :index, :show]
+	
 	match ':controller/:action/:id'  # uwaga na to! to zbiera wszystko postaci /jednafraza/druga/trzecia. zbierze nawet /devices/34/update wiec musi byc na samym koncu
 
 ####/devices

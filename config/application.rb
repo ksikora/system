@@ -120,9 +120,6 @@ module SimpleApp
 		end
 
 
-		b = Thread.new {binder}
-
-
 ########## test binder ################
 def testbinder
 		soc2 = UDPSocket.new
@@ -162,13 +159,14 @@ def testbinder
 
 end
 
-################ konfiguracja servera 
+################ konfiguracja servera ################
 		
     require 'socket'
     Sockets=Hash.new
     
     @myDataAdapter = nil
     
+
 
 
 
@@ -188,8 +186,7 @@ end
       end
       return @myDataAdapter.processData(x)
     end
-    
-    
+
     def runserv
 ################ Obiekt do przekazywanai danych do gui  
       #file = File.open '../log/tcpserver.log', 'a'
@@ -224,7 +221,7 @@ end
       end
     end	
 
-    a = Thread.new {runserv}
+
 
 ############## koniec konfiguracj servera tcp
    def runBeanstalkdDataReceiver
@@ -235,6 +232,12 @@ end
         sendDataToDataAdapter(job.body)
       end
     end
+
+############# init threads #################################
+
+    a = Thread.new {runserv}
+		b = Thread.new {binder}
+
 
 
 

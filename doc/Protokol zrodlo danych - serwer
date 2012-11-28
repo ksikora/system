@@ -1,0 +1,22 @@
+1. Serwer TCP jest tworzony na porcie 21001
+2. Klient sie z nim laczy
+3. Klient wysyla nazwe swojego deviceaa. Moze to byc np adres IP albo MAC | 3. Serwer odbiera nazwe
+4. Klient wysyla typ swojego device'a																			| 4. Serwer odbiera typ
+5. Klient odbiera swoj ID od serwera																			| 5. Serwer wysyla ID klientowi
+
+6. Klient w petli odbiera wiadomosci od Serwera.
+ - jesli wiadomosc jest turnon -> tworzy socket UDP i wysyla na niego wszystkie zebrane logi w postaci [id, "dana1,dana2,dana3,..."]
+ - jesli wiadomosc jest turnoff -> niszczy socket UDP(I WRACA NA POCZATEK PETLI)
+ JEST TO ROZWIAZANE TAK ZE KLIENT ZAWSZE NAJPIERW OCZEKUJE NA turnon A DOPIERO JAK TO DOSTAL JEST MOZLIWE OTRZYMANIE turnoff
+
+pseudokod:
+loop do
+	line = server.get
+	socketUDP.connect(adres port)
+	send_logs(socketUDP)
+	line = server.get
+	stop_sending_logs(socketUDP)
+	socketUDP.close
+end
+	
+ 
