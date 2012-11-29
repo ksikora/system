@@ -54,21 +54,21 @@ $(document).ready(function() {
                          setInterval(function() {
                          var x = (new Date()).getTime(), // current time
                          
-										     
-     										 y = get_data(xx);
-     										 //y = Math.random(1)
-										     if(typeof(y[0]) == undefined)
-										     {
-										     	 y[0] = 0;
-										     }
+										     if(running)
+                         {
+       										 y = get_data(xx);
+       										 //y = Math.random(1)
+										       if(typeof(y[0]) != undefined)
+										       {
+										           xx = xx+ 0.1;
+                            	 
+                                  	 series.addPoint([x, y[0]], true, true);
+                                  	 series2.addPoint([x, y[1]], true, true); 
+                           } 
+									       }
                          //y = Math.sin(xx);
                          
-                      	 xx = xx+ 0.1;
-                      	 if(running)
-                         {
-                            	 series.addPoint([x, y[0]], true, true);
-                            	 series2.addPoint([x, y[1]], true, true); 
-                         }
+                      	 
                }, 100);
             }
          }
@@ -129,7 +129,7 @@ $(document).ready(function() {
             var data = [],
                time = (new Date()).getTime(),
                i;
-            for (i = -50; i <= 0; i++) {
+            for (i = -150; i <= 0; i++) {
                data.push({
                   x: time + i * 1000,
                   y: 0
@@ -137,15 +137,14 @@ $(document).ready(function() {
             }
             return data;
          })()
-      },
-      {
+      },{
          name: 'Random data',
          data: (function() {
             // generate an array of random data
             var data = [],
                time = (new Date()).getTime(),
                i;
-            for (i = -50; i <= 0; i++) {
+            for (i = -150; i <= 0; i++) {
                data.push({
                   x: time + i * 1000,
                   y: 0
