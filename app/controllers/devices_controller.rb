@@ -1,6 +1,9 @@
 class DevicesController < ApplicationController
   # GET /devices
   # GET /devices.json
+
+	
+
   def index
     @devices = Device.all
 
@@ -9,6 +12,57 @@ class DevicesController < ApplicationController
       format.json { render json: @devices }
     end
   end
+
+  def index_ordered_by_name
+		if $name_order == nil
+			$name_order = 0
+		end
+
+		if $name_order == 1		
+	    @devices = Device.find(:all, order: 'name')
+			$name_order = 0
+		else
+	    @devices = Device.find(:all, order: 'name DESC')
+			$name_order = 1
+		end
+
+		render 'index'
+	end
+
+
+  def index_ordered_by_type
+		if $type_order == nil
+			$type_order = 0
+		end
+
+		if $type_order == 1		
+	    @devices = Device.find(:all, order: 'dtype')
+			$type_order = 0
+		else
+	    @devices = Device.find(:all, order: 'dtype DESC')
+			$type_order = 1
+		end
+
+		render 'index'
+	end
+
+  def index_ordered_by_send
+		if $send_order == nil
+			$send_order = 0
+		end
+
+		if $send_order == 1		
+	    @devices = Device.find(:all, order: 'sends_logs')
+			$send_order = 0
+		else
+	    @devices = Device.find(:all, order: 'sends_logs DESC')
+			$send_order = 1
+		end
+
+		render 'index'
+  end
+
+
 
   # GET /devices/1
   # GET /devices/1.json

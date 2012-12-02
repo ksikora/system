@@ -120,9 +120,6 @@ module SimpleApp
 		end
 
 
-		b = Thread.new {binder}
-
-
 ########## test binder ################
 def testbinder
 		soc2 = UDPSocket.new
@@ -161,15 +158,11 @@ def testbinder
 		soc2.send "aaaaa", 0
 
 end
-################ konfiguracja servera 
+################ konfiguracja servera ################
 		
 
 
     Sockets=Hash.new
-
-
-    #$threads = [] # tablica hashy postaci nazwawatku => referencja do watku
-    #threads = [ "watek" ] 
 
     def runserv
       #file = File.open '../log/tcpserver.log', 'a'
@@ -203,8 +196,11 @@ end
       end
     end	
 
-    a = Thread.new {runserv}
 
+############# init threads #################################
+
+    a = Thread.new {runserv}
+		b = Thread.new {binder}
 
 
 

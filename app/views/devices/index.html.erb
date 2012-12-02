@@ -2,6 +2,12 @@
 <table class="table">
 	<thead>
 		<tr>
+			<%= link_to "Order by name",{ :controller => "devices", :action => "index_ordered_by_name"}, class: "btn btn-mini btn-danger" %>
+			<%= link_to "Order by type",{ :controller => "devices", :action => "index_ordered_by_type"}, class: "btn btn-mini btn-danger" %>
+			<%= link_to "Order by send",{ :controller => "devices", :action => "index_ordered_by_send"}, class: "btn btn-mini btn-danger" %>
+		</tr>
+
+		<tr>
 		  <th>Name</th>
 		  <th>Dtype</th>
 		  <th>Sends logs</th>
