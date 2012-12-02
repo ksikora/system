@@ -107,7 +107,7 @@ module SimpleApp
 					counter = counter +1
 					Partial_logs[id]=[counter,chain]
 				else
-					puts 'wale do bazy'
+					#puts 'wale do bazy'
 					@log = Log.new
 					@log.device_id = @device_id
 					@log.content = chain
@@ -183,14 +183,12 @@ end
 					puts 'device saved to database'
 					Sockets[@device.id]=client
 					client.puts @device.id
-#					close = client.gets
-	#				if close == "close"
-		#				Socket.reject! { |k| k==@device.id }
-			#		end
-				#	if close == "close\n"
-				#		Socket.reject! { |k| k==@device.id }
-				#	end
 
+
+					close = client.gets # jedyna mozliwosc jest ze odbierze "close" wiec nawet nie sprawdzamy co odebralo
+					Sockets.delete @device.id
+
+					@device.destroy
 
 				end
       end
