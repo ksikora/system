@@ -26,7 +26,7 @@
 					<td><%= link_to "Turn off",{ :controller => "devices", :action => "deactivate", :id => device}, class: "btn btn-small btn-danger" %></td>
 				<% end %>
 				<td><%= link_to 'Destroy', device, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-small btn-primary" %></td>
-				<td><%= link_to 'Show Graph' , '#', :class => "btn btn-small btn-info" %></td>
+				<td><%= link_to 'Show Graph' , { :controller => "charts", :action => "index", :id => device}, :class => "btn btn-small btn-info" %></td>
 				<td><%= link_to 'Show raport', '#', class: "btn btn-small btn-warning"%></td>
 				<td><%# link_to 'Edit', edit_device_path(device), :class => "btn btn-small btn-primary" %></td>
 			</tr>
