@@ -18,4 +18,9 @@ class ChartsController < ApplicationController
 	    SimpleApp::Application::turnOffRtChart(params[:id].to_i)
 	    format.html { render :text => "done" }
 	  end
+
+	  def index()
+			redirect_to "/charts?id=#{params[:id].to_s + ',' +params[:measure].to_s}"
+		  #render "charts/chart/"
+    end
 end

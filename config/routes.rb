@@ -35,7 +35,7 @@ SimpleApp::Application.routes.draw do
 	match 'contact', :to => 'static_pages#contact'
 
 
-  match 'charts', :to => 'charts#chart'
+  match '/charts', :to => 'charts#chart'
 	match 'get_data_from_c' => 'charts#get_data_from_c'
 	match 'charts/turn_on' => 'charts#turnOn'
 	match 'charts/turn_off' => 'charts#turnOff'
@@ -46,6 +46,7 @@ match ':controller/:action'
 	resources :devices, only: [:activate, :deactivate, :index, :show]
 	
 	match ':controller/:action/:id'  # uwaga na to! to zbiera wszystko postaci /jednafraza/druga/trzecia. zbierze nawet /devices/34/update wiec musi byc na samym koncu
+  match ':controller/:action/:id/:measures'
 
 ####/devices
 	# drugi jest potrzebny do pobierania danych do RT wykresu przez resta
