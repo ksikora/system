@@ -52,7 +52,4 @@ end
 
 
 
-tmp = RealTimeDataAdapter.new
-tmp.processData('wacek,asd,1,2,3,4,1')
-puts tmp.getData('wacek')
-puts tmp.getData('wacek2')
+

@@ -74,7 +74,7 @@ if you have one.</stringProp>
             <stringProp name="port">10001</stringProp>
             <boolProp name="waitresponse">false</boolProp>
             <stringProp name="timeout"></stringProp>
-            <stringProp name="data">Test binary string</stringProp>
+            <stringProp name="data">2:0.13:123213.21535:1.0</stringProp>
             <stringProp name="encodeclass">kg.apc.jmeter.samplers.UDPSampler</stringProp>
             <stringProp name="TestPlan.comments">This sampler just make dummy UDP request and use UDPSampler encoder/decoder, 
 which treat request/response data as binary</stringProp>

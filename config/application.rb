@@ -8,7 +8,7 @@ require "action_controller/railtie"
 require "action_mailer/railtie"
 require "active_resource/railtie"
 require "sprockets/railtie"
-
+require "beanstalk-client"
 # require "rails/test_unit/railtie"
 
 if defined?(Bundler)
@@ -158,19 +158,62 @@ def testbinder
 		soc2.send "aaaaa", 0
 
 end
+
 ################ konfiguracja servera ################
 		
-
-
+    require 'socket'
     Sockets=Hash.new
+    
+    @myDataAdapter = nil
+    @myRTswitch = nil    
+
+
+
+
+    #$threads = [] # tablica hashy postaci nazwawatku => referencja do watku
+    #threads = [ "watek" ] 
+    
+    
+################ wlaczanie i wylaczanie RT ################
+     def turnOnRtChart(x)
+       if @myRTswitch == nil
+          @myRTswitch = RTswitch.new  
+       end
+       @myRTswitch.turnOn(x)
+
+     end
+    
+     def turnOffRtChart(x)
+       if @myRTswitch == nil
+          @myRTswitch = RTswitch.new  
+       end
+       @myRTswitch.turnOff(x)
+     end
+    
+    def getDataFromDataAdapter(x)
+      if @myDataAdapter == nil
+        @myDataAdapter = RealTimeDataAdapter.new
+      end
+        return @myDataAdapter.getData(x)
+    end
+    
+    def sendDataToDataAdapter(x)
+      if @myDataAdapter == nil
+        @myDataAdapter = RealTimeDataAdapter.new
+      end
+      return @myDataAdapter.processData(x)
+    end
 
     def runserv
+################ Obiekt do przekazywanai danych do gui  
       #file = File.open '../log/tcpserver.log', 'a'
       #file = File.new 'dupa.log', 'w'
       server = TCPServer.new 21001 
 
       #file.puts 'server initialized'
       puts 'server initialized'
+      
+      b = Thread.new {runBeanstalkdRTDataReceiver}
       loop do
 				Thread.start(server.accept) do |client|
 					name = client.gets
@@ -195,10 +238,30 @@ end
     end	
 
 
+
+############## koniec konfiguracj servera tcp
+   def runBeanstalkdRTDataReceiver
+      beanstalk = Beanstalk::Pool.new(['127.0.0.1:12348'])
+      loop do
+        job = beanstalk.reserve
+        sendDataToDataAdapter(job.body)
+      end
+    end
+
+
+def runBeanstalkdDataReceiver
+      beanstalk = Beanstalk::Pool.new(['127.0.0.1:12346'])
+      sock = UDPSocket.open
+      loop do
+        job = beanstalk.reserve
+        sock.send(j.body, 0, 'localhost', 210021)
+      end
+    end
 ############# init threads #################################
 
     a = Thread.new {runserv}
 		b = Thread.new {binder}
+
 
 
 
@@ -208,4 +271,130 @@ end
 
 
   end
+
+############## obiekt aktywujacy i wylaczajacy rt
+  class RTswitch
+  
+    def initialize
+      @deviceWatchers = Hash.new
+    end
+    
+    def turnOn(x)
+      
+      if not @deviceWatchers.has_key?(x)
+        @deviceWatchers.store(x,0)
+      end
+      
+      @deviceWatchers[x] = @deviceWatchers[x]+1
+      puts @deviceWatchers[x]
+      begin
+        f = open('plik.tmp')
+        line = f.readline
+      rescue
+        line = ""
+      end
+      begin
+        File.delete(f)
+      rescue
+      
+      end
+      if not line.split(' ').include?(x.to_s)
+        line = line + ' ' + x.to_s 
+      end
+      f = open('plik.tmp','w')
+      f.write(line)
+      f.close
+    end
+    
+    def turnOff(x)
+      if @deviceWatchers[x] == 1
+        begin
+          f = open('plik.tmp')
+          line = f.readline
+        rescue
+          line = ""
+        end
+
+        begin
+          File.delete(f)
+        rescue
+
+        end
+        if line.split(' ').include?(x.to_s) 
+          tmp = line.split(' ')
+          tmp.delete(x.to_s)
+          line = tmp.join(' ')
+        end
+        f = open('plik.tmp','w')
+        f.write(line)
+        f.close
+      end
+      @deviceWatchers[x] = @deviceWatchers[x]-1
+    end
+  
+  end
+
+  
+############## obiekt przekazujacy rt dane do controllera
+  
+
+  class RealTimeDataAdapter
+    require 'thread'
+    def initialize
+	    @deviceList = Hash.new	
+	    @mutex = Mutex.new
+    end
+
+  #	def processData(arg)
+  #		arr = arg.split(',')
+  #		@mutex.synchronize do
+  #			if not @deviceList.has_key?(arr[0])
+  #				queue = Array.new 
+  #				queue << arr[1..arr.length-1].join(',')
+  #				@deviceList.store(arr[0],queue)
+  #			else
+  #				@deviceList.fetch(arr[0]) << arr[1..arr.length-1].join(',')
+  #				if @deviceList.fetch(arr[0]).length == 21
+  #					@deviceList.fetch(arr[0]).delete_at(0)
+  #					@deviceList.fetch(arr[0]).compact!
+  #				end
+  #			end
+  #		end
+  #		puts @deviceList.to_s
+  #	end
+
+
+    def processData(arg)
+	    arr = arg.split(':')
+	    @mutex.synchronize do
+		    if not @deviceList.has_key?(arr[0])
+			    @deviceList.store(arr[0],arr[1..arr.length-1].join(' '))
+		    else
+			    @deviceList.delete(arr[0])
+			    @deviceList.store(arr[0],arr[1..arr.length-1].join(' '))
+		    end
+	    end
+    end
+
+    def getData(device)
+	    @mutex.synchronize do
+		    if not @deviceList.has_key?(device.to_s)
+		      puts 'walke' + device.to_s + " " + @deviceList.to_s
+			    return '0.0'
+		    end
+		    @deviceList.fetch(device.to_s)
+	    end
+    end
+
+  end
+  
+  
+############## obiekt przekazujacy rt dane do controllera - koniec
+
+
+############## BEANSTALKD receiver  
+    
+    
+    
 end
+

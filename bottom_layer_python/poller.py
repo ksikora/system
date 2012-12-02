@@ -10,7 +10,7 @@ from beanstalk import job
 server = '127.0.0.1'
 port = 11300
 
-def poll(memserv, memport, persserv, persport):
+def poll(memserv, memport, persserv, persport, rt_port):
     connection = serverconn.ServerConn(memserv, memport)
     connection.job = job.Job
     connectionpers = serverconn.ServerConn(persserv, persport)
@@ -25,4 +25,4 @@ def poll(memserv, memport, persserv, persport):
             j.Finish()
 	
     finally:
-        print "messages pulled from queue ", i        
+        print "messages pulled from queue ", i , "assssssssssssssssssssssssssss"

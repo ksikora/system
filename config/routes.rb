@@ -37,6 +37,8 @@ SimpleApp::Application.routes.draw do
 
   match 'charts', :to => 'charts#chart'
 	match 'get_data_from_c' => 'charts#get_data_from_c'
+	match 'charts/turn_on' => 'charts#turnOn'
+	match 'charts/turn_off' => 'charts#turnOff'
 
 
 ### devices  
