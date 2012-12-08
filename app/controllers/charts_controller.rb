@@ -5,7 +5,7 @@ class ChartsController < ApplicationController
 	  		#puts SimpleApp::Application::getDataFromDataAdapter(0.1) + "asdasdasdasdasdasdasdasd"
 	  		# 
 	  		# tmp = Math.sin(params[:x].to_f).to_s + ' ' + Math.cos(params[:x].to_f).to_s
-			  format.html { render :text => SimpleApp::Application::getDataFromDataAdapter(params[:id].to_i).to_s }
+			  format.html { render :text => SimpleApp::Application::getDataFromDataAdapter(params[:id].split("=")[1].to_i) }
 			end
 	  end
 	  

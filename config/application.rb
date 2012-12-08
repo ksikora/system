@@ -201,7 +201,7 @@ end
       if @myDataAdapter == nil
         @myDataAdapter = RealTimeDataAdapter.new
       end
-      return @myDataAdapter.processData(x)
+      @myDataAdapter.processData(x)
     end
 
     def runserv
@@ -240,7 +240,7 @@ end
 
 
 ############## koniec konfiguracj servera tcp
-   def runBeanstalkdRTDataReceiver
+   def runBeanstalkdRTDataReceiver  
       beanstalk = Beanstalk::Pool.new(['127.0.0.1:12348'])
       loop do
         job = beanstalk.reserve
@@ -365,7 +365,7 @@ def runBeanstalkdDataReceiver
 
 
     def processData(arg)
-	    arr = arg.split(':')
+	    arr = arg.split(',')
 	    @mutex.synchronize do
 		    if not @deviceList.has_key?(arr[0])
 			    @deviceList.store(arr[0],arr[1..arr.length-1].join(' '))
