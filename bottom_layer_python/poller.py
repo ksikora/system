@@ -20,7 +20,7 @@ def poll(memserv, memport, persserv, persport, rt_port):
         while True:
             j = connection.reserve()
             j.conn = connectionpers
-            j.Queue()
+            #j.Queue()
             i=i+1
             j.Finish()
 	

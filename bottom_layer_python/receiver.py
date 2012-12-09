@@ -23,7 +23,7 @@ class Echo(DatagramProtocol):
 
 
 
-def receiveFromProcessQueue(queue, server, port):
+def receiveFromProcessQueue(rtDevices,index,queue, server, port):
 	connection = serverconn.ServerConn(server, port)
 	connection.job = job.Job
 	while(True):
@@ -31,9 +31,8 @@ def receiveFromProcessQueue(queue, server, port):
 		data1 = job.Job(data=msg[0], conn=connection)
 		global rt_bs_con
 		data2 = job.Job(data=msg[0], conn=rt_bs_con)
-		global rtDevices
-		global index
-		pid = data2.data.split(":")[0]
+
+		pid = data2.data.split(",")[0]
 		tmp = False
 		for i in range(0,index.value):
 			if rtDevices[i] == int(pid):
@@ -45,12 +44,10 @@ def receiveFromProcessQueue(queue, server, port):
 		
 
 rt_bs_con = None
-rtDevices = None
 index = None
 
 def receive(server,port, rt_port):
 	queue = Queue()
-	global rtDevices
 	global index
 	rtDevices = Array('i',range(100))
 	index = Value('i',0)
@@ -60,7 +57,7 @@ def receive(server,port, rt_port):
 	rt_bs_con = serverconn.ServerConn(server, rt_port)
 	rt_bs_con.job = job.Job
 	received = Echo(queue)
-	receiver_process = Process(target=receiveFromProcessQueue, args=(queue, server, port,))
+	receiver_process = Process(target=receiveFromProcessQueue, args=(rtDevices,index,queue, server, port,))
 	receiver_process.start()
 	try:
 		reactor.listenUDP(10001, received)
@@ -79,11 +76,19 @@ def receive(server,port, rt_port):
 
 def updateRTList(rtDevs, ind):
 	while(True):
-		line = open("../plik.tmp","r").readline().split(" ")
 		try:
-			for i in range(0,len(line)):
+			line = open("../plik.tmp","r").readline().split(" ")
+		except:
+			time.sleep(2)
+			print 'execption in openfile'
+			continue
+		try:
+			for i in range(1,len(line)):
 				rtDevs[i] = int(line[i])
 		except:
+			print 'exception in writing to Array'
+			time.sleep(2)
 			continue
+
 		ind.value = len(line)
 		time.sleep(2)
