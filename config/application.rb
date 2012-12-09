@@ -203,36 +203,38 @@ end
       end
       return @myDataAdapter.processData(x)
     end
-
+################ Obiekt do przekazywanai danych do gui 
     def runserv
-################ Obiekt do przekazywanai danych do gui  
-      #file = File.open '../log/tcpserver.log', 'a'
-      #file = File.new 'dupa.log', 'w'
+			f = open('./log/tcpserver.log','w')
       server = TCPServer.new 21001 
 
-      #file.puts 'server initialized'
-      puts 'server initialized'
-      
+      line= "server initialized\n"
+      puts line
+			f.write("#{Time.new}:		")
+			f.write(line)
       b = Thread.new {runBeanstalkdRTDataReceiver}
       loop do
 				Thread.start(server.accept) do |client|
-					name = client.gets
-					dtype = client.gets
+					name = client.gets.chop
+					dtype = client.gets.chop
 					hash = Hash[name: name, dtype: dtype, sends_logs: false]
 					puts hash
 					@device = Device.new(hash) 
 					
 					@device.save
-					puts 'device saved to database'
+					f.write("#{Time.new}:		")			
+					line =  "device with id: #{@device.id} saved to database\n"
+					f.write(line)
+					puts line
 					Sockets[@device.id]=client
 					client.puts @device.id
 
-
-					close = client.gets # jedyna mozliwosc jest ze odbierze "close" wiec nawet nie sprawdzamy co odebralo
-					Sockets.delete @device.id
-
-					@device.destroy
-
+					close = client.gets
+						Sockets.delete @device.id
+						f.write("#{Time.new}:		")		
+						line =  "device with id: #{@device.id} has disconnected from system\n"
+						f.write(line)					
+						@device.destroy
 				end
       end
     end	

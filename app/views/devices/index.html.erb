@@ -2,15 +2,10 @@
 <table class="table">
 	<thead>
 		<tr>
-			<%= link_to "Order by name",{ :controller => "devices", :action => "index_ordered_by_name"}, class: "btn btn-mini btn-danger" %>
-			<%= link_to "Order by type",{ :controller => "devices", :action => "index_ordered_by_type"}, class: "btn btn-mini btn-danger" %>
-			<%= link_to "Order by send",{ :controller => "devices", :action => "index_ordered_by_send"}, class: "btn btn-mini btn-danger" %>
-		</tr>
-
-		<tr>
-		  <th>Name</th>
-		  <th>Dtype</th>
-		  <th>Sends logs</th>
+		  <th><p><%= link_to "Order by ",{ :controller => "devices", :action => "index_ordered_by_name"}, class: "btn btn-mini btn-danger" %></p>Name</th>
+		  <th><p><%= link_to "Order by ",{ :controller => "devices", :action => "index_ordered_by_type"}, class: "btn btn-mini btn-danger" %></p>Type</th>
+		  <th><p><%= link_to "Order by ",{ :controller => "devices", :action => "index_ordered_by_send"}, class: "btn btn-mini btn-danger" %></p>Sends logs </th>
+			<th><p><%= link_to "Order by ",{ :controller => "devices", :action => "index_ordered_by_creation_time"}, class: "btn btn-mini btn-danger" %></p>Attach time</th>
 		</tr>
 	</theard>
 	<tbody>
@@ -19,6 +14,7 @@
 				<td><%= device.name %></td>
 				<td><%= device.dtype %></td>
 				<td><%= device.sends_logs %></td>
+				<td><%= device.created_at %></td>
 				<% if device.sends_logs == false %>
 					<td><%= link_to "Turn on",{ :controller => "devices", :action => "activate", :id => device}, class: "btn btn-small btn-success" %></td>
 											<!--uwaga na nawiasy wasowe, one musza byc bo inaczej jaja sie dzieja -->

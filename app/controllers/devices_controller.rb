@@ -62,6 +62,22 @@ class DevicesController < ApplicationController
 		render 'index'
   end
 
+  def index_ordered_by_creation_time
+		if $creat_order == nil
+			$creat_order = 0
+		end
+
+		if $creat_order == 1		
+	    @devices = Device.find(:all, order: 'created_at')
+			$creat_order = 0
+		else
+	    @devices = Device.find(:all, order: 'created_at DESC')
+			$creat_order = 1
+		end
+
+		render 'index'
+  end
+
 
 
   # GET /devices/1
