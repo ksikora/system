@@ -22,6 +22,7 @@ end
 7. Klient w dowolnej chwili moze wyslac z innego watku wiadomosc "close" na tcp, serwer nasluchuje na nadejscie tej wiadomosc
 8. klient po wyslaniu close, zaklada sie ze jest wylaczony i musi ponownie przejsc proces tworzenia i autentyfikacji w systemie
 
+UWAGA: Typ device'a sa to oddzielone przecinkami nazwy wysylanych parametrow postaci x,y,z . Nie dajemy na koncu przecinka.
 
 	
  

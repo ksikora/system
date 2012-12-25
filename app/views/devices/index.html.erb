@@ -23,7 +23,7 @@
 				<% end %>
 				<td><%= link_to 'Destroy', device, method: :delete, data: { confirm: 'Are you sure?' }, :class => "btn btn-small btn-primary" %></td>
 				<td><%= link_to 'Show Graph' , { :controller => "charts", :action => "index", :id => device, measure: "first,second"}, :class => "btn btn-small btn-info" %></td>
-				<td><%= link_to 'Show raport', '#', class: "btn btn-small btn-warning"%></td>
+				<td><%= link_to 'Generate raport', { controller: "reports", :action => "createandshow", :id => device}, class: "btn btn-small btn-warning"%></td>
 				<td><%# link_to 'Edit', edit_device_path(device), :class => "btn btn-small btn-primary" %></td>
 			</tr>
 		<% end %>

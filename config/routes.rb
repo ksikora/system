@@ -4,6 +4,10 @@ SimpleApp::Application.routes.draw do
 
 
 
+  get "reports/index"
+
+  get "reports/show"
+
   resources :logs
 
 

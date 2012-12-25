@@ -1,0 +1,20 @@
+<h1>Report for device nr <%=@report.device_id%></h1>
+<% averages = @report.average.split(',') %>
+<% std_deviations = @report.standard_deviation.split(',') %>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Parameter Name</th>
+			<th>Standard Deviation</th>
+			<th>Average</th>
+		</tr>
+	</theard>
+	<% @parameters_names.each_index do |i| %>
+	<tbody>
+		<td><%= @parameters_names[i] %></td>
+		<td><%= std_deviations[i] %></td>
+		<td><%= averages[i] %></td>
+	</tbody>
+	<% end %>
+</table>
+

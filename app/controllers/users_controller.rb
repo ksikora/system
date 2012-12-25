@@ -18,7 +18,9 @@ class UsersController < ApplicationController
 
 
 	def create
-		@user = User.new(params[:user]) # przekazujemy parametry zebrane z formularza. tamten obiekt tymczasowy od teraz jest nieprzydatny.
+		@user = User.new(params[:user]) # przekazujemy parametry zebrane z formularza. tamten obiekt tymczasowy od teraz jes nieprzydatny.
+
+		puts @user
 		if @user.save				# params od obiektu zawiera hasha hashy gdzie obiekt jest mapowany na parametry a kazdy z parametrow to tez hash np Password: dupa itd.
 
 			sign_in @user

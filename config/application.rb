@@ -74,7 +74,7 @@ module SimpleApp
 
 
 
-		DIVIDER = 50
+		DIVIDER = 3
 		Partial_logs = Hash.new
 
 		def binder()
@@ -86,7 +86,7 @@ module SimpleApp
 			puts 'UDP for binder successfuly binded'
 
 			#c = Thread.new {testbinder} # usuniecie tego odpala test
-				
+			
 			loop do
 				#puts 'odebrano dane'
 
@@ -99,18 +99,18 @@ module SimpleApp
 				end
 
 				parametry = Partial_logs[id]
-				counter = parametry[0]
-				chain = parametry[1]
-			
-				if counter < DIVIDER
-					chain = "#{chain}:#{cont}"
+				counter = parametry[0]         # ile porcji danych
+				chain = parametry[1]					 # dotychczasowe dane
+			 	if counter < DIVIDER
+					chain = "#{chain}:#{cont}" ############# log postaci jest aaaa:aaaa:aaaa:aaaa
 					counter = counter +1
 					Partial_logs[id]=[counter,chain]
 				else
 					#puts 'wale do bazy'
 					@log = Log.new
 					@log.device_id = @device_id
-					@log.content = chain
+					@log.content = "#{chain}:#{cont}"
+					#puts @log.content
 					@log.save
 					chain = ""
 					counter = 0
@@ -125,35 +125,47 @@ def testbinder
 		soc2 = UDPSocket.new
 		soc2.connect("127.0.0.1",210021)
 
-		puts "dupa"
 
 		sleep 4
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
+		sleep 1
 		soc2.send "1", 0
 		soc2.send "aaaaa", 0
 

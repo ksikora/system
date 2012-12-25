@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121127184648) do
+ActiveRecord::Schema.define(:version => 20121225173534) do
 
   create_table "devices", :force => true do |t|
     t.string   "name"
@@ -30,6 +30,17 @@ ActiveRecord::Schema.define(:version => 20121127184648) do
   end
 
   add_index "logs", ["device_id"], :name => "index_logs_on_device_id"
+
+  create_table "reports", :force => true do |t|
+    t.string   "average"
+    t.string   "standard_deviation"
+    t.string   "min"
+    t.string   "max"
+    t.integer  "device_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.string   "parameters_name"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "name"
