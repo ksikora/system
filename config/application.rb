@@ -73,26 +73,30 @@ module SimpleApp
   	require 'socket'
 
 
-
 		DIVIDER = 3
 		Partial_logs = Hash.new
-
-		def binder()
-
-			soc = UDPSocket.new
-			soc.bind("127.0.0.1",210021)
-
-
-			puts 'UDP for binder successfuly binded'
-
-			#c = Thread.new {testbinder} # usuniecie tego odpala test
-			
-			loop do
-				#puts 'odebrano dane'
-
-			
-				id = soc.recv(10000)
-				cont = soc.recv(10000)
+  def runBeanstalkdDataReceiver
+      beanstalk = Beanstalk::Pool.new(['127.0.0.1:12346'])
+      #puts 'starting data receiver'
+      sock = UDPSocket.new
+      sock.connect("127.0.0.1",210021)
+      loop do
+        #puts 'wacek'
+        job = beanstalk.reserve
+        #puts 'received'
+        #id =  job.body.split(',')[0]
+        #message = job.body.split(',')[1..-1].join(',')
+        #puts id + ' ' + message
+        #sock.send id, 0
+        #sock.send job.body, 0
+        #puts 'sent'
+        
+        msg = job.body
+        id = msg.split(',')[0]
+			  cont = msg.split(',')[1..-1].join(',').split(/\n/)[0]
+			  #puts "#{cont} aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+				#id = soc.recv(10000)
+				#cont = soc.recv(10000)
 
 				if Partial_logs[id] == nil
 					Partial_logs[id]= [0, ""]
@@ -107,6 +111,56 @@ module SimpleApp
 					Partial_logs[id]=[counter,chain]
 				else
 					#puts 'wale do bazy'
+					
+				  @log = Log.new
+				  #puts e.inspect
+				  #puts e.backtrace
+					#puts 'LOG NEW'
+					@device_id=id
+					@log.device_id = @device_id
+					#puts 'znam device id'
+					@log.content = "#{chain}:#{cont}"
+					#puts @log.content
+					@log.save
+					chain = ""
+					counter = 0
+					Partial_logs[id]=[counter,chain]
+				end
+      end
+    end
+		def binder()
+
+			soc = UDPSocket.new
+			soc.bind("127.0.0.1",210021)
+
+
+			puts 'UDP for binder successfuly binded'
+
+			#c = Thread.new {testbinder} # usuniecie tego odpala test
+			
+			loop do
+				#puts 'odebrano dane'
+
+			  msg = soc.recv(10000)
+			  id = msg.split(',')[0]
+			  cont = msg.split(',')[1..-1].join(',').split(/\n/)[0]
+			  puts "#{cont} aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+				#id = soc.recv(10000)
+				#cont = soc.recv(10000)
+
+				if Partial_logs[id] == nil
+					Partial_logs[id]= [0, ""]
+				end
+
+				parametry = Partial_logs[id]
+				counter = parametry[0]         # ile porcji danych
+				chain = parametry[1]					 # dotychczasowe dane
+			 	if counter < DIVIDER
+					chain = "#{chain}:#{cont}" ############# log postaci jest aaaa:aaaa:aaaa:aaaa
+					counter = counter +1
+					Partial_logs[id]=[counter,chain]
+				else
+					puts 'wale do bazy'
 					@log = Log.new
 					@log.device_id = @device_id
 					@log.content = "#{chain}:#{cont}"
@@ -224,7 +278,7 @@ end
       puts line
 			f.write("#{Time.new}:		")
 			f.write(line)
-      b = Thread.new {runBeanstalkdRTDataReceiver}
+      
       loop do
 				Thread.start(server.accept) do |client|
 					name = client.gets.chop
@@ -263,19 +317,14 @@ end
     end
 
 
-def runBeanstalkdDataReceiver
-      beanstalk = Beanstalk::Pool.new(['127.0.0.1:12346'])
-      sock = UDPSocket.open
-      loop do
-        job = beanstalk.reserve
-        sock.send(j.body, 0, 'localhost', 210021)
-      end
-    end
+
 ############# init threads #################################
 
     a = Thread.new {runserv}
-		b = Thread.new {binder}
-
+		#b = Thread.new {binder}
+    c = Thread.new {runBeanstalkdRTDataReceiver}
+    #sleep(1)
+    d = Thread.new {runBeanstalkdDataReceiver}
 
 
 

@@ -27,12 +27,15 @@ class ReportsController < ApplicationController
     @set = [[],[],[],[],[],[],[],[],[],[],[],[],[],[]]# tu chcemy uzyskac [[val11,val12,val13..], [val21,val22,val23....]..]
     
   	############## test
-  	#@logs = @device.logs # zakomentuj to przy testach 
-  	@logs = ["1.0,17.0,3.0:4.0,2.0,3.0", "2.0,2.0,3.0:1.0,2.0,3.0"] # Odkomentuj to przy testach
+  	
+  	#  @logs = @device.logs # zakomentuj to przy testach 
+    
+  	@logs = Log.find(:all, :conditions => {:device_id => deviceid})
+  	#@logs = ["1.0,17.0,3.0:4.0,2.0,3.0", "2.0,2.0,3.0:1.0,2.0,3.0"] # Odkomentuj to przy testach
   	
   	@logs.each do |bindedlog| # log: val1,val2,val3:val1,val2,val3:...
-  		#unbinded_log_table = bindedlog.content.split(':')# [val1,val2,val3 , val1,val2,val3, ....  # zakomentuj to przy testach 
-  		unbinded_log_table = bindedlog.split(':') # Odkomentuj to przy testach
+  		unbinded_log_table = bindedlog.content.split(':')# [val1,val2,val3 , val1,val2,val3, ....  # zakomentuj to przy testach 
+  		#unbinded_log_table = bindedlog.split(':') # Odkomentuj to przy testach
   		unbinded_log_table.each do |log|
   			values = log.split(',') #[val1,val2,val3]
   			i = 0

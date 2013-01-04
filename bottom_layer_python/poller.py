@@ -18,9 +18,13 @@ def poll(memserv, memport, persserv, persport, rt_port):
     i = 0
     try:
         while True:
-            j = connection.reserve()
+            try:
+                j = connection.reserve()
+            except:
+                print 'i chuj'
+                continue
             j.conn = connectionpers
-            #j.Queue()
+            j.Queue()
             i=i+1
             j.Finish()
 	
