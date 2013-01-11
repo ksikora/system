@@ -78,3 +78,13 @@ heroku logs # pokazuje logi heroku
 heroku run rake db:version
 heroku rake db:migrate
 
+# inzynierka
+aby odpalic projekt trzeba zmienic funkcje sum.rb w descriptive statistics na: rvm/railsset/gems/descriptive statistics (sciezka na oko)
+  def sum(identity = 0, &block)
+    if block_given?
+      map(&block).sum(identity)
+    else
+      inject(:+) || identity
+    end
+  end
+

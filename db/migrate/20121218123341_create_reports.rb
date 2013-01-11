@@ -1,6 +1,5 @@
 class CreateReports < ActiveRecord::Migration
   def change
-    drop_table :reports
     create_table :reports do |t|
       t.string :average
       t.string :standard_deviation
