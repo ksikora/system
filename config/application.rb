@@ -76,14 +76,29 @@ module SimpleApp
 		DIVIDER = 3
 		Partial_logs = Hash.new
   def runBeanstalkdDataReceiver
-      beanstalk = Beanstalk::Pool.new(['127.0.0.1:12346'])
-      #puts 'starting data receiver'
-      sock = UDPSocket.new
-      sock.connect("127.0.0.1",210021)
+  
+      #def runBeanstalkdRTDataReceiver  
+#      beanstalk = Beanstalk::Pool.new(['127.0.0.1:12348'])
+#      loop do
+##        begin
+#          job = beanstalk.reserve
+#          sendDataToDataAdapter(job.body)
+#          puts job.body
+#        rescue
+#          beanstalk = Beanstalk::Pool.new(['127.0.0.1:12348'])
+#          puts 'exception caught'      
+#        end
+ #     end
+#    end
+  
+  
+
+      beanstalk = Beanstalk::Pool.new(['127.0.0.1:92349'])
+      puts 'starting data receiver' + beanstalk.to_s
+      #sock = UDPSocket.new
+      #sock.connect("127.0.0.1",210021)
       loop do
-        #puts 'wacek'
         job = beanstalk.reserve
-        #puts 'received'
         #id =  job.body.split(',')[0]
         #message = job.body.split(',')[1..-1].join(',')
         #puts id + ' ' + message
@@ -92,16 +107,16 @@ module SimpleApp
         #puts 'sent'
         
         msg = job.body
+        job.delete
         id = msg.split(',')[0]
 			  cont = msg.split(',')[1..-1].join(',').split(/\n/)[0]
 			  #puts "#{cont} aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 				#id = soc.recv(10000)
 				#cont = soc.recv(10000)
-
+        
 				if Partial_logs[id] == nil
 					Partial_logs[id]= [0, ""]
 				end
-
 				parametry = Partial_logs[id]
 				counter = parametry[0]         # ile porcji danych
 				chain = parametry[1]					 # dotychczasowe dane
@@ -120,14 +135,26 @@ module SimpleApp
 					@log.device_id = @device_id
 					#puts 'znam device id'
 					@log.content = "#{chain}:#{cont}"
-					#puts @log.content
+					puts @log.content
 					@log.save
 					chain = ""
 					counter = 0
 					Partial_logs[id]=[counter,chain]
 				end
       end
+      
+      
+      
+      
     end
+    
+    
+    
+    
+    
+    
+    
+    
 		def binder()
 
 			soc = UDPSocket.new
@@ -144,7 +171,7 @@ module SimpleApp
 			  msg = soc.recv(10000)
 			  id = msg.split(',')[0]
 			  cont = msg.split(',')[1..-1].join(',').split(/\n/)[0]
-			  puts "#{cont} aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+			  #puts "#{cont} aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 				#id = soc.recv(10000)
 				#cont = soc.recv(10000)
 
@@ -311,8 +338,14 @@ end
    def runBeanstalkdRTDataReceiver  
       beanstalk = Beanstalk::Pool.new(['127.0.0.1:12348'])
       loop do
-        job = beanstalk.reserve
-        sendDataToDataAdapter(job.body)
+        begin
+          job = beanstalk.reserve
+          sendDataToDataAdapter(job.body)
+          job.delete
+        rescue
+          beanstalk = Beanstalk::Pool.new(['127.0.0.1:12348'])
+          puts 'exception caught'      
+        end
       end
     end
 
@@ -322,9 +355,11 @@ end
 
     a = Thread.new {runserv}
 		#b = Thread.new {binder}
+		d = Thread.new {runBeanstalkdDataReceiver}
+		sleep(1)
     c = Thread.new {runBeanstalkdRTDataReceiver}
-    #sleep(1)
-    d = Thread.new {runBeanstalkdDataReceiver}
+    
+    
 
 
 
@@ -428,6 +463,7 @@ end
 
 
     def processData(arg)
+    puts arg
 	    arr = arg.split(',')
 	    @mutex.synchronize do
 		    if not @deviceList.has_key?(arr[0])

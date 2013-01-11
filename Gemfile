@@ -6,10 +6,10 @@ gem 'therubyracer'
 gem 'bootstrap-sass', '2.0.2' # sass to jezyk podobny do LESS CSS, ktorego normalnie uzywa bootstrap
 gem 'bcrypt-ruby', '3.0.1'# dzieki temu bedziemy szyfrowali hasla w bazie danych
 gem 'rb-readline' # aby konsola dziala
-gem 'descriptive_statistics'
-
+#gem 'descriptive_statistics'
+gem 'sqlite3', '1.3.5'
+gem 'beanstalk-client','1.0.2'
 group :development, :test do
-  gem 'sqlite3', '1.3.5'
   gem 'rspec-rails', '2.10.0'
   gem 'guard-rspec', '0.5.5'
 end
@@ -25,7 +25,7 @@ group :assets do
 end
 
 gem 'jquery-rails', '2.0.2'
-gem 'beanstalk-client'
+
 
 group :test do
   gem 'rspec-rails','2.10.0'

@@ -20,13 +20,17 @@ def poll(memserv, memport, persserv, persport, rt_port):
         while True:
             try:
                 j = connection.reserve()
+                j.Finish()
             except:
-                print 'i chuj'
+                print 'deadline_soon caught'
                 continue
+            #j2 = job.Job(data=j.data, conn=connectionpers)
+            #j2.Queue()
             j.conn = connectionpers
             j.Queue()
+            print 'queued'
             i=i+1
-            j.Finish()
+            #j.Finish()
 	
     finally:
         print "messages pulled from queue ", i , "assssssssssssssssssssssssssss"

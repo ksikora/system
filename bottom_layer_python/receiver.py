@@ -40,7 +40,9 @@ def receiveFromProcessQueue(rtDevices,index,queue, server, port):
 				break
 		if tmp == True:
 			data2.Queue()
+			data2.Finish()
 		data1.Queue()
+		#data1.Finish()
 		
 
 rt_bs_con = None

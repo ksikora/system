@@ -20,7 +20,10 @@ class ChartsController < ApplicationController
 	  end
 
 	  def index()
-			redirect_to "/charts?id=#{params[:id].to_s + ',' +params[:measure].to_s}"
+			#redirect_to "/charts?id=#{params[:id].to_s + ',' +params[:measure].to_s}"
+		  device = Device.find(params[:id])
+		  redirect_to "/charts?id=#{params[:id].to_s + ',' +device.dtype}"
+		  
 		  #render "charts/chart/"
     end
 end
